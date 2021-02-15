@@ -11,6 +11,7 @@ import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.enums.StateAccountEnum;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,12 @@ public class AccountService {
     }
 
     public void createAccount(Account account) throws InsertException {
-        try {            
+        try {
             account.setStatus(StateAccountEnum.INACTIVO.getEstado());
-            log.info("Creando cuenta "+account.getStatus());
             account.setCreationDate(new Date());
             account.setCurrentBalance(BigDecimal.ZERO);
-            log.info("Creando cuenta "+account.getStatus());
             account.setNumber(newNumberAccount());
-            log.info("Creando cuenta "+account.getNumber());
+            log.info("Creando cuenta " + account.getNumber());
             this.accountRepo.save(account);
         } catch (Exception e) {
             throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
@@ -55,16 +54,21 @@ public class AccountService {
         }
     }
 
-    private String newNumberAccount() {
-        Account account = this.accountRepo.findFirstByOrderByNumberDesc();
-        log.info("NewNUMBER:  "+account.toString());
-        String number = "";
-        if (account != null) {
-           number = Integer.toString(Integer.parseInt(account.getNumber())+1);           
-        } else {
-           number = "270000000001";
+    private String newNumberAccount() throws UpdateException {
+        String numberAccount;
+        try {
+            Account account = this.accountRepo.findFirstByOrderByNumberDesc();
+            if (account != null) {
+                BigDecimal number = new BigDecimal(account.getNumber());
+                number = number.add(new BigDecimal(1));
+                numberAccount = number.toString();
+            } else {
+                numberAccount = "270000000001";
+            }
+        } catch (Exception e) {
+            throw new UpdateException("Number Account", "Error number account" + e);
         }
-        return number;
+        return numberAccount;
     }
 
 }
