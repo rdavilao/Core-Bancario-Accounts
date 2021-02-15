@@ -8,12 +8,11 @@ package ec.edu.espe.corebancario.accounts.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +30,7 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_ACCOUNT", nullable = false)
     private Integer code;
     @Column(name = "CLIENT_IDENTIFICATION", nullable = false, length = 13)
@@ -133,7 +133,8 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "ec.edu.espe.corebancario.accounts.model.Account[ codAccount=" + code + " ]";
+        return "Account{" + "code=" + code + ", clientIdentification=" + clientIdentification + ", type=" + type + ", status=" + status + ", number=" + number + ", creationDate=" + creationDate + ", currentBalance=" + currentBalance + '}';
     }
+
     
 }
