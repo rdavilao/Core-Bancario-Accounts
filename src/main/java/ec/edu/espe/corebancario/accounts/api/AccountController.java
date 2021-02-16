@@ -45,6 +45,7 @@ public class AccountController {
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody UpdateAccountRQ updateAccount) {
         try {
+            log.info(updateAccount.getNumber()+" - "+updateAccount.getState());
             this.service.updateStatus(updateAccount.getNumber(),updateAccount.getState());
             return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
