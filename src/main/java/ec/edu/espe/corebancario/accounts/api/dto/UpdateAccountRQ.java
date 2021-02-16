@@ -11,6 +11,6 @@ import lombok.Data;
 public class UpdateAccountRQ {
     
     private String number;
-    private String State;
+    private String state;
     
 }

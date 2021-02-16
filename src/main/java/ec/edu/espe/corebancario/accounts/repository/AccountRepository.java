@@ -14,5 +14,5 @@ public interface AccountRepository extends CrudRepository <Account, Integer> {
     List<Account> findByClientIdentification(String clientIdentification);
     Account findByNumber(String number);
     Account findFirstByOrderByNumberDesc();
-    
+    Account findByClientIdentificationAndType(String clientIdentification,String type);
 }

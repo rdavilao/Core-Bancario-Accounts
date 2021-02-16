@@ -5,10 +5,6 @@
  */
 package ec.edu.espe.corebancario.accounts.exception;
 
-/**
- *
- * @author hecto
- */
 public class UpdateException extends Exception{
     
     private final String collectionName;
