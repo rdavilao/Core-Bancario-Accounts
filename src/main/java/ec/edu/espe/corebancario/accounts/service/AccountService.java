@@ -50,9 +50,11 @@ public class AccountService {
         try {
             Account accountUpdate = this.accountRepo.findByNumber(number);
             if (accountUpdate != null) {
+                log.info("Cuenta: "+number+" se actualizo el estado a: "+newStatus);
                 accountUpdate.setStatus(newStatus);
                 this.accountRepo.save(accountUpdate);
             } else {
+                log.error("Intento de cambio de estado a cuenta no existente: "+number);
                 throw new UpdateException("account", "Ocurrio un error, no existe el numero de cuenta: " + number);
             }
         } catch (Exception e) {
