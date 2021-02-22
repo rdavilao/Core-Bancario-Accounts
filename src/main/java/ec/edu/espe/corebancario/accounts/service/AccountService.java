@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-
 public class AccountService {
 
     private final AccountRepository accountRepo;
@@ -29,23 +28,17 @@ public class AccountService {
 
     public void createAccount(Account account) throws InsertException {
         try {
-            Account accountExists = this.accountRepo.findByClientIdentificationAndType(account.getClientIdentification(), account.getType());
-            if (accountExists == null) {
-                account.setStatus(StateAccountEnum.INACTIVO.getEstado());
-                account.setCreationDate(new Date());
-                account.setCurrentBalance(BigDecimal.ZERO);
-                account.setNumber(newNumberAccount());
-                log.info("Creando cuenta " + account.getNumber());
-                this.accountRepo.save(account);
-            }else{
-                log.error("Intento de creacion de cuenta duplicada");
-                throw new InsertException("Account", "Cuenta ya existente: " + account.toString());
-            }
+            account.setCreationDate(new Date());
+            account.setNumber(newNumberAccount());
+            account.setBalance(BigDecimal.ZERO);
+            account.setStatus(StateAccountEnum.INACTIVO.getEstado());
+            log.info("Creando cuenta " + account.getNumber());
+            this.accountRepo.save(account);
         } catch (Exception e) {
             throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
         }
     }
-
+    
     public void updateStatus(String number, String newStatus) throws UpdateException {
         try {
             Account accountUpdate = this.accountRepo.findByNumber(number);
