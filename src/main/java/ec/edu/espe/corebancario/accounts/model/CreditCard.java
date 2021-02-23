@@ -18,13 +18,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "credit_card", catalog = "corebancario-accounts", schema = "", uniqueConstraints = {
+@Table(name = "credit_card", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"NUMBER"})})
-public class CreditCard implements Serializable {
+public class CreditCard{
 
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_CARD", nullable = false)
@@ -52,101 +57,4 @@ public class CreditCard implements Serializable {
     
     @JoinColumn(name = "COD_ACCOUNT", referencedColumnName = "COD_ACCOUNT")
     private Integer codAccount;
-
-    public CreditCard() {
-    }
-
-    public CreditCard(Integer codCard) {
-        this.codigo = codCard;
-    }
-    
-    public Integer getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public Integer getLimitAccount() {
-        return limitAccount;
-    }
-
-    public void setLimitAccount(Integer limitAccount) {
-        this.limitAccount = limitAccount;
-    }
-
-    public String getCvv() {
-        return cvv;
-    }
-
-    public void setCvv(String cvv) {
-        this.cvv = cvv;
-    }
-
-    public Date getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getCodAccount() {
-        return codAccount;
-    }
-
-    public void setCodAccount(Integer codAccount) {
-        this.codAccount = codAccount;
-    }
-    
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (codigo != null ? codigo.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CreditCard)) {
-            return false;
-        }
-        CreditCard other = (CreditCard) object;
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "ec.edu.espe.corebancario.accounts.model.CreditCard[ codCard=" + codigo + " ]";
-    }
-    
 }
