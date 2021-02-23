@@ -13,6 +13,7 @@ import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,19 @@ public class AccountService {
             this.accountRepo.save(account);
         } catch (Exception e) {
             throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
+        }
+    }
+    
+    public List<Account> listAccounts(String identification) throws DocumentNotFoundException {
+        try {
+            List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
+            if(!accounts.isEmpty()){
+                return this.accountRepo.findByClientIdentification(identification);
+            }else{                
+                throw  new DocumentNotFoundException("No existen cuentas asociadas al cliente: " + identification);
+            }            
+        } catch (Exception e) {
+            throw  new DocumentNotFoundException("Ocurrio un error en listar las cuentas del cliente: " + identification);
         }
     }
     

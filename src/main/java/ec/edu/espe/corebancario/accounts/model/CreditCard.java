@@ -51,7 +51,6 @@ public class CreditCard implements Serializable {
     private String status;
     
     @JoinColumn(name = "COD_ACCOUNT", referencedColumnName = "COD_ACCOUNT")
-    @ManyToOne
     private Integer codAccount;
 
     public CreditCard() {

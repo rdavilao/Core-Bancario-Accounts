@@ -19,6 +19,7 @@ import ec.edu.espe.corebancario.accounts.repository.TypeAccountRepository;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,19 @@ public class CreditCardService {
             this.creditCardRepo.save(creditCard);
         } catch (Exception e) {
             throw new InsertException("CreditCard", "Ocurrio un error al crear la la tarjeta de credito: " + creditCard.toString(), e);
+        }
+    }
+    
+    public List<CreditCard> listCreditCardActiva(Integer codAccount) throws DocumentNotFoundException {
+        try {
+            List<CreditCard> creditCards = this.creditCardRepo.findByCodAccountAndStatus(codAccount,StateAccountEnum.ACTIVO.getEstado());
+            if(!creditCards.isEmpty()){
+                return creditCards;
+            }else{                
+                throw  new DocumentNotFoundException("No existen tarjetas de credito activas del cliente.");
+            }            
+        } catch (Exception e) {
+            throw  new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito");
         }
     }
     

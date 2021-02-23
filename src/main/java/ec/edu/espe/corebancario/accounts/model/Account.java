@@ -54,7 +54,6 @@ public class Account implements Serializable {
     private List<CreditCard> creditCardList;
     
     @JoinColumn(name = "TYPE", referencedColumnName = "COD_TYPE_ACCOUNT")
-    @ManyToOne
     private Integer type;
 
     public Account() {

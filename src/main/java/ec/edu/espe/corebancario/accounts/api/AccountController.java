@@ -12,6 +12,8 @@ import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-
 @RequestMapping("/api/corebancario/account")
 @Slf4j
-
 public class AccountController {
     
     private final AccountService service;
@@ -31,6 +31,16 @@ public class AccountController {
     public AccountController(AccountService service) {
         this.service = service;
     }
+    
+    @GetMapping("/listAccount/{id}")
+    public ResponseEntity listAccounts(@PathVariable String id){
+        try {
+            return ResponseEntity.ok(this.service.listAccounts(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody Account account) {
@@ -51,5 +61,5 @@ public class AccountController {
         } catch (UpdateException ex) {
             return ResponseEntity.badRequest().build();
         }
-    }   
+    }
 }
