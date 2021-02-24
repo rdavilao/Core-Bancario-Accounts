@@ -69,6 +69,25 @@ public class AccountService {
         }
     }
 
+    public BigDecimal getBalanceAccount(String identification) throws DocumentNotFoundException {
+        try {
+            List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
+            if(!accounts.isEmpty()){
+                BigDecimal balance = new BigDecimal(0);
+                for (int i = 0; i < accounts.size(); i ++){
+                    if (StateAccountEnum.ACTIVO.getEstado().equals(accounts.get(i).getStatus())){
+                        balance = balance.add(accounts.get(i).getBalance());
+                    }
+                }
+                return balance;
+            }else{
+                throw new DocumentNotFoundException("No existe cuentas para el cliente"+identification);
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Error al obtener balance de cuenta");
+        }
+    }
+            
     private String newNumberAccount() throws DocumentNotFoundException {
         String numberAccount;
         try {

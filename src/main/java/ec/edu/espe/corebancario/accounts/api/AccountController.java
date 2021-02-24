@@ -6,6 +6,7 @@
 package ec.edu.espe.corebancario.accounts.api;
 
 import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountRQ;
+import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
@@ -55,11 +56,19 @@ public class AccountController {
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody UpdateAccountRQ updateAccount) {
         try {
-            log.info(updateAccount.getNumber()+" - "+updateAccount.getState());
             this.service.updateStatus(updateAccount.getNumber(),updateAccount.getState());
             return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping("/balanceClient/{identification}")
+    public ResponseEntity balanceClient(@PathVariable String identification) {
+        try {            
+            return ResponseEntity.ok(this.service.getBalanceAccount(identification));
+        } catch (DocumentNotFoundException ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

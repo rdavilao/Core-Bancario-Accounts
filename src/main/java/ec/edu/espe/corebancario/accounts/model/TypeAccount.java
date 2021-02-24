@@ -26,7 +26,7 @@ public class TypeAccount{
     @Column(name = "COD_TYPE_ACCOUNT", nullable = false)
     private Integer codigo;
     
-    @Column(name = "NAME", nullable = false, length = 12)
+    @Column(name = "NAME", nullable = false, length = 16)
     private String name;
     
     @Column(name = "TYPE", nullable = false, length = 12)
