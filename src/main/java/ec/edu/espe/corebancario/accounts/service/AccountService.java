@@ -13,12 +13,12 @@ import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-
 public class AccountService {
 
     private final AccountRepository accountRepo;
@@ -29,23 +29,30 @@ public class AccountService {
 
     public void createAccount(Account account) throws InsertException {
         try {
-            Account accountExists = this.accountRepo.findByClientIdentificationAndType(account.getClientIdentification(), account.getType());
-            if (accountExists == null) {
-                account.setStatus(StateAccountEnum.INACTIVO.getEstado());
-                account.setCreationDate(new Date());
-                account.setCurrentBalance(BigDecimal.ZERO);
-                account.setNumber(newNumberAccount());
-                log.info("Creando cuenta " + account.getNumber());
-                this.accountRepo.save(account);
-            }else{
-                log.error("Intento de creacion de cuenta duplicada");
-                throw new InsertException("Account", "Cuenta ya existente: " + account.toString());
-            }
+            account.setCreationDate(new Date());
+            account.setNumber(newNumberAccount());
+            account.setBalance(BigDecimal.ZERO);
+            account.setStatus(StateAccountEnum.INACTIVO.getEstado());
+            log.info("Creando cuenta " + account.getNumber());
+            this.accountRepo.save(account);
         } catch (Exception e) {
             throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
         }
     }
-
+    
+    public List<Account> listAccounts(String identification) throws DocumentNotFoundException {
+        try {
+            List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
+            if(!accounts.isEmpty()){
+                return this.accountRepo.findByClientIdentification(identification);
+            }else{                
+                throw  new DocumentNotFoundException("No existen cuentas asociadas al cliente: " + identification);
+            }            
+        } catch (Exception e) {
+            throw  new DocumentNotFoundException("Ocurrio un error en listar las cuentas del cliente: " + identification);
+        }
+    }
+    
     public void updateStatus(String number, String newStatus) throws UpdateException {
         try {
             Account accountUpdate = this.accountRepo.findByNumber(number);
@@ -62,6 +69,25 @@ public class AccountService {
         }
     }
 
+    public BigDecimal getBalanceAccount(String identification) throws DocumentNotFoundException {
+        try {
+            List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
+            if(!accounts.isEmpty()){
+                BigDecimal balance = new BigDecimal(0);
+                for (int i = 0; i < accounts.size(); i ++){
+                    if (StateAccountEnum.ACTIVO.getEstado().equals(accounts.get(i).getStatus())){
+                        balance = balance.add(accounts.get(i).getBalance());
+                    }
+                }
+                return balance;
+            }else{
+                throw new DocumentNotFoundException("No existe cuentas para el cliente"+identification);
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Error al obtener balance de cuenta");
+        }
+    }
+            
     private String newNumberAccount() throws DocumentNotFoundException {
         String numberAccount;
         try {

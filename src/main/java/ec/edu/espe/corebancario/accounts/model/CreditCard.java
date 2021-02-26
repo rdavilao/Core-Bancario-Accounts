@@ -5,9 +5,8 @@
  */
 package ec.edu.espe.corebancario.accounts.model;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,34 +26,35 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "account", uniqueConstraints = {
+@Table(name = "credit_card", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"NUMBER"})})
-public class Account{
+public class CreditCard{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COD_ACCOUNT", nullable = false)
+    @Column(name = "COD_CARD", nullable = false)
     private Integer codigo;
     
-    @Column(name = "CLIENT_IDENTIFICATION", nullable = false, length = 13)
-    private String clientIdentification;
+    @Column(name = "NUMBER", nullable = false, length = 18)
+    private String number;
+    
+    @Column(name = "LIMIT_ACCOUNT")
+    private Integer limitAccount;
+    
+    @Column(name = "CVV", length = 3)
+    private String cvv;
+    
+    @Column(name = "EXPIRATION_DATE")
+    @Temporal(TemporalType.DATE)
+    private Date expirationDate;
     
     @Column(name = "CREATION_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     
-    @Column(name = "NUMBER", nullable = false, length = 12)
-    private String number;
-    
-    @Column(name = "BALANCE", nullable = false)
-    private BigDecimal balance;
-    
-    @Column(name = "STATUS", nullable = false, length = 3)
+    @Column(name = "STATUS", length = 3)
     private String status;
     
-    @OneToMany(mappedBy = "codAccount")
-    private List<CreditCard> creditCardList;
-    
-    @JoinColumn(name = "TYPE", referencedColumnName = "COD_TYPE_ACCOUNT")
-    private Integer type;
+    @JoinColumn(name = "COD_ACCOUNT", referencedColumnName = "COD_ACCOUNT")
+    private Integer codAccount;
 }
