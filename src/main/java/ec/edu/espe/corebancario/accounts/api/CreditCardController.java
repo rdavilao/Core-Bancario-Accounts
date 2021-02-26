@@ -8,6 +8,9 @@ package ec.edu.espe.corebancario.accounts.api;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.service.CreditCardService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,11 @@ public class CreditCardController {
     }
     
     @GetMapping("/listCreditCard/{codigo}")
+    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
+        @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
+    })
     public ResponseEntity listAccounts(@PathVariable Integer codigo){
         try {
             return ResponseEntity.ok(this.service.listCreditCardActiva(codigo));
@@ -38,6 +46,11 @@ public class CreditCardController {
     }
     
     @PostMapping("/create")
+    @ApiOperation(value = "Crea una tarjeta de credito", notes = "Crea una tarjeta de credito.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Tarjeta de credito creada"),
+        @ApiResponse(code = 400, message = "Error al crear una tarjeta de credito")
+    })
     public ResponseEntity create(@RequestBody CreditCard creditCard) {
         try {
             this.service.createCreditCard(creditCard);
