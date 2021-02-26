@@ -57,15 +57,41 @@ public class AccountService {
         try {
             Account accountUpdate = this.accountRepo.findByNumber(number);
             if (accountUpdate != null) {
-                log.info("Cuenta: "+number+" se actualizo el estado a: "+newStatus);
+                log.info("Cuenta: " + number + " se actualizo el estado a: " + newStatus);
+                if (!(!accountUpdate.getBalance().equals(new BigDecimal(0)) && StateAccountEnum.INACTIVO.getEstado().equals(newStatus))){
                 accountUpdate.setStatus(newStatus);
                 this.accountRepo.save(accountUpdate);
+                }else{
+                log.error("Intento de cambio de estado a inactivo a una cuenta con balance distinto a 0.");
+                throw new UpdateException("account", "Ocurrio un error al actualizar el estado de la de cuenta: " + number);
+                }
             } else {
-                log.error("Intento de cambio de estado a cuenta no existente: "+number);
+                log.error("Intento de cambio de estado a cuenta no existente: " + number);
                 throw new UpdateException("account", "Ocurrio un error, no existe el numero de cuenta: " + number);
             }
         } catch (Exception e) {
             throw new UpdateException("account", "Ocurrio un error al actualizar el estado de la cuenta: " + number, e);
+        }
+    }
+
+    public void updateBalance(String number, BigDecimal balance) throws UpdateException {
+        try {
+            Account accountUpdate = this.accountRepo.findByNumber(number);
+            if (accountUpdate != null) {
+                if (StateAccountEnum.ACTIVO.getEstado().equals(accountUpdate.getStatus())) {
+                    log.info("Cuenta: " + number + " se actualizo su balance: " + balance);
+                    accountUpdate.setBalance(balance);
+                    this.accountRepo.save(accountUpdate);
+                } else {
+                    log.error("Intento de cambio de balance a cuenta no activa: " + number);
+                    throw new UpdateException("account", "Ocurrio un error, no se permite actualizar el balance a una cuenta inactiva: " + number);
+                }
+            } else {
+                log.error("Intento de cambio de balance a cuenta no existente: " + number);
+                throw new UpdateException("account", "Ocurrio un error, no existe el numero de cuenta: " + number);
+            }
+        } catch (Exception e) {
+            throw new UpdateException("account", "Ocurrio un error al actualizar el balance de la cuenta: " + number, e);
         }
     }
 
