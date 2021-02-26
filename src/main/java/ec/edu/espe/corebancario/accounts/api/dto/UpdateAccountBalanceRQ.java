@@ -5,12 +5,14 @@
  */
 package ec.edu.espe.corebancario.accounts.api.dto;
 
+import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class UpdateAccountRQ {
+
+public class UpdateAccountBalanceRQ {
     
     private String number;
-    private String state;
+    private BigDecimal balance;
     
 }

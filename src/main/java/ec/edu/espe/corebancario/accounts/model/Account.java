@@ -7,15 +7,12 @@ package ec.edu.espe.corebancario.accounts.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,10 +49,7 @@ public class Account{
     
     @Column(name = "STATUS", nullable = false, length = 3)
     private String status;
-    
-    @OneToMany(mappedBy = "codAccount")
-    private List<CreditCard> creditCardList;
-    
+        
     @JoinColumn(name = "TYPE", referencedColumnName = "COD_TYPE_ACCOUNT")
     private Integer type;
 }
