@@ -6,12 +6,15 @@
 package ec.edu.espe.corebancario.accounts.api;
 
 import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountRQ;
+import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-
 @RequestMapping("/api/corebancario/account")
 @Slf4j
-
 public class AccountController {
     
     private final AccountService service;
@@ -31,6 +32,16 @@ public class AccountController {
     public AccountController(AccountService service) {
         this.service = service;
     }
+    
+    @GetMapping("/listAccount/{id}")
+    public ResponseEntity listAccounts(@PathVariable String id){
+        try {
+            return ResponseEntity.ok(this.service.listAccounts(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody Account account) {
@@ -45,11 +56,19 @@ public class AccountController {
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody UpdateAccountRQ updateAccount) {
         try {
-            log.info(updateAccount.getNumber()+" - "+updateAccount.getState());
             this.service.updateStatus(updateAccount.getNumber(),updateAccount.getState());
             return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
             return ResponseEntity.badRequest().build();
         }
-    }   
+    }
+    
+    @GetMapping("/balanceClient/{identification}")
+    public ResponseEntity balanceClient(@PathVariable String identification) {
+        try {            
+            return ResponseEntity.ok(this.service.getBalanceAccount(identification));
+        } catch (DocumentNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -3,6 +3,8 @@
   <persistence-unit name="ec.edu.espe.corebancario_accounts_jar_1PU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>ec.edu.espe.corebancario.accounts.model.Account</class>
+    <class>ec.edu.espe.corebancario.accounts.model.TypeAccount</class>
+    <class>ec.edu.espe.corebancario.accounts.model.CreditCard</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/corebancario?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="admin"/>
