@@ -52,6 +52,48 @@ public class AccountController {
         }
     }
     
+    @GetMapping("/findAccountByNumber/{number}")
+    @ApiOperation(value = "Busqueda de cuenta por número de cuenta", notes = "Busqueda de cuenta por número de cuenta. El numero de cuenta es único.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Cuenta encontrada"),
+        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+    })
+    public ResponseEntity findAccountByNumber(@PathVariable String number) {
+        try {
+            return ResponseEntity.ok(this.service.getAccountByNumber(number));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/findAccountById/{id}")
+    @ApiOperation(value = "Busqueda de cuenta por id cuenta", notes = "Busqueda de cuenta por id de cuenta. El numero de id de cuenta es único.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Cuenta encontrada"),
+        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+    })
+    public ResponseEntity findAccountById(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(this.service.getAccountById(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/findLastAccount/{identification}")
+    @ApiOperation(value = "Busqueda de la ultima cuenta creada de un cliente", notes = "Busqueda de la ultima cuenta creada de un cliente.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Cuenta encontrada"),
+        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+    })
+    public ResponseEntity findLastAccountByIdentification(@PathVariable String identification) {
+        try {
+            return ResponseEntity.ok(this.service.getLastAccountByIdentification(identification));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     @GetMapping("/balanceClient/{identification}")
     @ApiOperation(value = "Balance de cuenta total del cliente", notes = "Balance de cuenta total del cliente. El balance de cuenta total de un cliente es la suma de balances de todas las cuentas de un mismo cliente")
     @ApiResponses(value = {

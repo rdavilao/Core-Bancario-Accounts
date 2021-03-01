@@ -7,6 +7,7 @@ package ec.edu.espe.corebancario.accounts.repository;
 
 import ec.edu.espe.corebancario.accounts.model.Account;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AccountRepository extends CrudRepository <Account, Integer> {
@@ -15,4 +16,6 @@ public interface AccountRepository extends CrudRepository <Account, Integer> {
     Account findByNumber(String number);
     Account findFirstByOrderByNumberDesc();
     Account findByClientIdentificationAndType(String clientIdentification,String type);
+    List<Account> findByClientIdentificationOrderByCreationDateDesc(String clientIdentification, Pageable limit);
+    
 }
