@@ -14,7 +14,9 @@ import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -113,7 +115,48 @@ public class AccountService {
             throw new DocumentNotFoundException("Error al obtener balance de cuenta");
         }
     }
-            
+    
+    public Account getAccountByNumber(String number) throws DocumentNotFoundException {
+        try {
+            Account account = this.accountRepo.findByNumber(number);
+            if(account != null){
+            return account;
+            }else{
+                throw new DocumentNotFoundException("Cuenta no existente");
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Error al obtener cuenta");
+        }
+    }
+    
+    public Account getAccountById(Integer id) throws DocumentNotFoundException {
+        try {
+            Optional<Account> accountFind = this.accountRepo.findById(id);
+            if(!accountFind.isEmpty()){
+            Account account = accountFind.get();
+            return account;
+            }else{
+                throw new DocumentNotFoundException("Cuenta no existente");
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Error al obtener cuenta");
+        }
+    }
+    
+    public Account getLastAccountByIdentification(String identification) throws DocumentNotFoundException {
+        try {
+            List<Account> accountFind = this.accountRepo.findByClientIdentificationOrderByCreationDateDesc(identification, PageRequest.of(0, 1));
+            if(!accountFind.isEmpty()){
+            Account account = accountFind.get(0);
+            return account;
+            }else{
+                throw new DocumentNotFoundException("Cuenta no existente");
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Error al obtener cuenta");
+        }
+    }
+    
     private String newNumberAccount() throws DocumentNotFoundException {
         String numberAccount;
         try {
