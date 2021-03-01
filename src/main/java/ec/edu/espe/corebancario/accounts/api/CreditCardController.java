@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(maxAge=3600)
@@ -42,6 +43,20 @@ public class CreditCardController {
     public ResponseEntity listAccounts(@PathVariable Integer codigo){
         try {
             return ResponseEntity.ok(this.service.listCreditCardActiva(codigo));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/listCreditCardClient")
+    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
+        @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
+    })
+    public ResponseEntity listCreditCardClient(@RequestParam String identification,@RequestParam Integer type){
+        try {
+            return ResponseEntity.ok(this.service.listCreditCardByType(identification, type));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
