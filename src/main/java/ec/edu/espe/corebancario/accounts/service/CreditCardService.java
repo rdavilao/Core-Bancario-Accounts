@@ -47,7 +47,7 @@ public class CreditCardService {
             creditCard.setNumber(newNumberCreditCard(creditCard.getCodAccount(), numberRandom));
             creditCard.setCvv(Hashing.sha256()
                     .hashString(String.valueOf(numberRandom.nextInt(899) + 100),
-                             StandardCharsets.UTF_8).toString()
+                            StandardCharsets.UTF_8).toString()
             );
             creditCard.setCreationDate(new Date());
             creditCard.setExpirationDate(expirationDate());
@@ -55,6 +55,19 @@ public class CreditCardService {
             this.creditCardRepo.save(creditCard);
         } catch (Exception e) {
             throw new InsertException("CreditCard", "Ocurrio un error al crear la la tarjeta de credito: " + creditCard.toString(), e);
+        }
+    }
+
+    public CreditCard findCreditCard(String number) throws DocumentNotFoundException {
+        try {
+            CreditCard creditCard = this.creditCardRepo.findByNumber(number);
+            if (creditCard != null) {
+                return creditCard;
+            } else {
+                throw new DocumentNotFoundException("No existe la tarjeta de credito.");
+            }
+        } catch (Exception e) {
+            throw new DocumentNotFoundException("Ocurrio un error en listar la tarjeta de credito " + e);
         }
     }
 
@@ -67,7 +80,7 @@ public class CreditCardService {
                 throw new DocumentNotFoundException("No existen tarjetas de credito activas del cliente.");
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito");
+            throw new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito " + e);
         }
     }
 
@@ -85,6 +98,7 @@ public class CreditCardService {
                             cardRQ.setLimitAccount(creditCards.get(j).getLimitAccount());
                             cardRQ.setExpirationDate(creditCards.get(j).getExpirationDate());
                             cardRQ.setAccount(accounts.get(i).getNumber());
+                            cardRQ.setBalanceAccount(accounts.get(i).getBalance());
                             creditCardsRQ.add(cardRQ);
                         }
                     } else {
