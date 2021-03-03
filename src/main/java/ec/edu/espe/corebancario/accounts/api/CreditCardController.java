@@ -22,46 +22,60 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(maxAge=3600)
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/corebancario/creditCard")
 @Slf4j
 public class CreditCardController {
-    
+
     private final CreditCardService service;
 
     public CreditCardController(CreditCardService service) {
         this.service = service;
     }
-    
+
+    @GetMapping("/findCreditCard/{number}")
+    @ApiOperation(value = "Busqueda de tarjeta de credito por su numero", notes = "Una numero de tarjeta de credito es unico para cada tarjeta")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Tarjeta de credito encontrada"),
+        @ApiResponse(code = 404, message = "No existen tarjeta de credito")
+    })
+    public ResponseEntity findCreditCard(@PathVariable String number) {
+        try {
+            return ResponseEntity.ok(this.service.findCreditCard(number));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/listCreditCard/{codigo}")
     @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
         @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity listAccounts(@PathVariable Integer codigo){
+    public ResponseEntity listAccounts(@PathVariable Integer codigo) {
         try {
             return ResponseEntity.ok(this.service.listCreditCardActiva(codigo));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/listCreditCardClient")
     @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
         @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity listCreditCardClient(@RequestParam String identification,@RequestParam Integer type){
+    public ResponseEntity listCreditCardClient(@RequestParam String identification, @RequestParam Integer type) {
         try {
             return ResponseEntity.ok(this.service.listCreditCardByType(identification, type));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PostMapping("/create")
     @ApiOperation(value = "Crea una tarjeta de credito", notes = "Crea una tarjeta de credito.")
     @ApiResponses(value = {
@@ -76,6 +90,5 @@ public class CreditCardController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
-    
+
 }
