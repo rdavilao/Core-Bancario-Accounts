@@ -5,7 +5,9 @@
  */
 package ec.edu.espe.corebancario.accounts.api;
 
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRQ;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
+import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.service.CreditCardService;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +78,22 @@ public class CreditCardController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    
+    @PutMapping("/updateStatus")
+    @ApiOperation(value = "Actualizar el estado de una tarjeta de credito", notes = "Actualiza el estado de una tarjeta de credito")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Estado de tarjeta de credito actualizada"),
+        @ApiResponse(code = 400, message = "Error al actualizar el tarjeta de credito cuenta")
+    })
+    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRQ updateAccount) {
+        try {
+            this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
+            return ResponseEntity.ok().build();
+        } catch (UpdateException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
     @PostMapping("/create")
     @ApiOperation(value = "Crea una tarjeta de credito", notes = "Crea una tarjeta de credito.")
     @ApiResponses(value = {
@@ -90,5 +108,4 @@ public class CreditCardController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 }
