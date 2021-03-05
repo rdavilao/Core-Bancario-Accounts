@@ -5,6 +5,9 @@
  */
 package ec.edu.espe.corebancario.accounts.service;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
@@ -31,12 +34,19 @@ public class AccountService {
 
     public void createAccount(Account account) throws InsertException {
         try {
-            account.setCreationDate(new Date());
+            HttpResponse<JsonNode> request = Unirest.get("http://localhost:8081/api/corebancario/client/findClientById/{id}")
+                        .routeParam("id", account.getClientIdentification()).asJson();            
+            if(200 == request.getStatus()){
+            account.setCreationDate(new Date());            
             account.setNumber(newNumberAccount());
             account.setBalance(BigDecimal.ZERO);
             account.setStatus(StateAccountEnum.INACTIVO.getEstado());
             log.info("Creando cuenta " + account.getNumber());
             this.accountRepo.save(account);
+            }else{
+                log.error("Error al crear cuenta con cliente no existente: "+account.getClientIdentification());
+                throw new InsertException("Account", "Error al crear cuenta con cliente no existente: " + account.toString());
+            }
         } catch (Exception e) {
             throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
         }
