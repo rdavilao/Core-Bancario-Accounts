@@ -65,8 +65,8 @@ public class CreditCardService {
         } catch (Exception e) {
             throw new InsertException("CreditCard", "Ocurrio un error al crear la la tarjeta de credito: " + creditCard.toString(), e);
         }
-    }   
-    
+    }
+
     public CreditCard findCreditCard(String number) throws DocumentNotFoundException {
         try {
             CreditCard creditCard = this.creditCardRepo.findByNumber(number);
@@ -80,13 +80,32 @@ public class CreditCardService {
         }
     }
 
-    public List<CreditCard> listCreditCardActiva(Integer codAccount) throws DocumentNotFoundException {
+    public List<CreditCardRQ> listCreditCardActiva(String identification) throws DocumentNotFoundException {
         try {
-            List<CreditCard> creditCards = this.creditCardRepo.findByCodAccountAndStatus(codAccount, StateAccountEnum.ACTIVO.getEstado());
-            if (!creditCards.isEmpty()) {
-                return creditCards;
+            List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
+            if (!accounts.isEmpty()) {
+                List<CreditCardRQ> creditCardsRQ = new ArrayList<>();
+                for (int i = 0; i < accounts.size(); i++) {
+                    if (4 == accounts.get(i).getType() || 5 == accounts.get(i).getType()) {
+                        List<CreditCard> creditCards = this.creditCardRepo.findByCodAccountAndStatus(accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
+                        if (!creditCards.isEmpty()) {
+                            for (int j = 0; j < creditCards.size(); j++) {
+                                CreditCardRQ cardRQ = new CreditCardRQ();
+                                cardRQ.setNumber(creditCards.get(j).getNumber());
+                                cardRQ.setLimitAccount(creditCards.get(j).getLimitAccount());
+                                cardRQ.setExpirationDate(creditCards.get(j).getExpirationDate());
+                                cardRQ.setAccount(accounts.get(i).getNumber());
+                                cardRQ.setBalanceAccount(accounts.get(i).getBalance());
+                                creditCardsRQ.add(cardRQ);
+                            }
+                        } else {
+                            throw new DocumentNotFoundException("No existen tarjetas de credito activas a nombre de ese cliente: " + identification);
+                        }
+                    }
+                }
+                return creditCardsRQ;
             } else {
-                throw new DocumentNotFoundException("No existen tarjetas de credito activas del cliente.");
+                throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: " + identification);
             }
         } catch (Exception e) {
             throw new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito " + e);
@@ -123,23 +142,23 @@ public class CreditCardService {
         }
 
     }
-    
+
     public void updateStatus(String number, String newStatus) throws UpdateException {
         try {
             CreditCard creditCardUpdate = this.creditCardRepo.findByNumber(number);
             if (creditCardUpdate != null) {
-                log.info("Tarjeta de credito: " + number + " se actualizo el estado a: " + newStatus);                
+                log.info("Tarjeta de credito: " + number + " se actualizo el estado a: " + newStatus);
                 creditCardUpdate.setStatus(newStatus);
                 this.creditCardRepo.save(creditCardUpdate);
-                }else{
+            } else {
                 log.error("Intento de cambio de estado a una tarjeta de credito no existente");
                 throw new UpdateException("credit card", "Ocurrio un error al actualizar el estado de la tarjeta de credito: " + number);
-                }            
+            }
         } catch (Exception e) {
             throw new UpdateException("credit card", "Ocurrio un error al actualizar el estado de la tarjeta de credito: " + number, e);
         }
     }
-    
+
     private String newNumberCreditCard(Integer codAccount, Random random) throws DocumentNotFoundException {
         StringBuilder numberCreditCard = new StringBuilder();
         try {
