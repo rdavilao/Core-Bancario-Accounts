@@ -7,16 +7,22 @@ package ec.edu.espe.corebancario.accounts.service;
 
 import com.google.common.hash.Hashing;
 import ec.edu.espe.corebancario.accounts.api.dto.CreditCardRQ;
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRQ;
 import ec.edu.espe.corebancario.accounts.enums.StateAccountEnum;
 import ec.edu.espe.corebancario.accounts.enums.TypeCreditCardEnum;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
+import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.model.TypeAccount;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import ec.edu.espe.corebancario.accounts.repository.CreditCardRepository;
 import ec.edu.espe.corebancario.accounts.repository.TypeAccountRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +31,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @Service
@@ -56,8 +65,8 @@ public class CreditCardService {
         } catch (Exception e) {
             throw new InsertException("CreditCard", "Ocurrio un error al crear la la tarjeta de credito: " + creditCard.toString(), e);
         }
-    }
-
+    }   
+    
     public CreditCard findCreditCard(String number) throws DocumentNotFoundException {
         try {
             CreditCard creditCard = this.creditCardRepo.findByNumber(number);
@@ -114,7 +123,23 @@ public class CreditCardService {
         }
 
     }
-
+    
+    public void updateStatus(String number, String newStatus) throws UpdateException {
+        try {
+            CreditCard creditCardUpdate = this.creditCardRepo.findByNumber(number);
+            if (creditCardUpdate != null) {
+                log.info("Tarjeta de credito: " + number + " se actualizo el estado a: " + newStatus);                
+                creditCardUpdate.setStatus(newStatus);
+                this.creditCardRepo.save(creditCardUpdate);
+                }else{
+                log.error("Intento de cambio de estado a una tarjeta de credito no existente");
+                throw new UpdateException("credit card", "Ocurrio un error al actualizar el estado de la tarjeta de credito: " + number);
+                }            
+        } catch (Exception e) {
+            throw new UpdateException("credit card", "Ocurrio un error al actualizar el estado de la tarjeta de credito: " + number, e);
+        }
+    }
+    
     private String newNumberCreditCard(Integer codAccount, Random random) throws DocumentNotFoundException {
         StringBuilder numberCreditCard = new StringBuilder();
         try {
