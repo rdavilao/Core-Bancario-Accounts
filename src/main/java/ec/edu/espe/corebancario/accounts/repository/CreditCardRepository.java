@@ -13,7 +13,7 @@ public interface CreditCardRepository extends CrudRepository<CreditCard, Integer
 
     CreditCard findByNumber(String number);
 
-    List<CreditCard> findByCodAccountAndStatus(Integer codAccount, String status);
+    List<CreditCard> findByCodAccountAndStatus(Integer codAccount, String status);    
 
     CreditCard findFirstByOrderByNumberDesc();
 }

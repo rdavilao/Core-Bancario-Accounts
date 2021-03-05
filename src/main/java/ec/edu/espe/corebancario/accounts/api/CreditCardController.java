@@ -51,15 +51,15 @@ public class CreditCardController {
         }
     }
 
-    @GetMapping("/listCreditCard/{codigo}")
+    @GetMapping("/listCreditCard/{identification}")
     @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
         @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity listAccounts(@PathVariable Integer codigo) {
+    public ResponseEntity listAccounts(@PathVariable String identification) {
         try {
-            return ResponseEntity.ok(this.service.listCreditCardActiva(codigo));
+            return ResponseEntity.ok(this.service.listCreditCardActiva(identification));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
