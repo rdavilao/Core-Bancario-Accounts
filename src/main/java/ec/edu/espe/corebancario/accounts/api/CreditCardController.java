@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ec.edu.espe.corebancario.accounts.api;
 
-import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRQ;
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
@@ -38,10 +33,11 @@ public class CreditCardController {
     }
 
     @GetMapping("/findCreditCard/{number}")
-    @ApiOperation(value = "Busqueda de tarjeta de credito por su numero", notes = "Una numero de tarjeta de credito es unico para cada tarjeta")
+    @ApiOperation(value = "Busqueda de tarjeta de credito por su numero", 
+            notes = "Una numero de tarjeta de credito es unico para cada tarjeta")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Tarjeta de credito encontrada"),
-        @ApiResponse(code = 404, message = "No existen tarjeta de credito")
+            @ApiResponse(code = 200, message = "Tarjeta de credito encontrada"),
+            @ApiResponse(code = 404, message = "No existen tarjeta de credito")
     })
     public ResponseEntity findCreditCard(@PathVariable String number) {
         try {
@@ -52,10 +48,11 @@ public class CreditCardController {
     }
 
     @GetMapping("/listCreditCard/{identification}")
-    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
+    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", 
+            notes = "Una cuenta puede tener asociada varias tarjetas de credito")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
-        @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
+            @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
+            @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
     public ResponseEntity listAccounts(@PathVariable String identification) {
         try {
@@ -66,10 +63,11 @@ public class CreditCardController {
     }
 
     @GetMapping("/listCreditCardClient")
-    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", notes = "Una cuenta puede tener asociada varias tarjetas de credito")
+    @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta",
+            notes = "Una cuenta puede tener asociada varias tarjetas de credito")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
-        @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
+            @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
+            @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
     public ResponseEntity listCreditCardClient(@RequestParam String identification, @RequestParam Integer type) {
         try {
@@ -78,14 +76,15 @@ public class CreditCardController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PutMapping("/updateStatus")
-    @ApiOperation(value = "Actualizar el estado de una tarjeta de credito", notes = "Actualiza el estado de una tarjeta de credito")
+    @ApiOperation(value = "Actualizar el estado de una tarjeta de credito",
+            notes = "Actualiza el estado de una tarjeta de credito")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Estado de tarjeta de credito actualizada"),
-        @ApiResponse(code = 400, message = "Error al actualizar el tarjeta de credito cuenta")
+            @ApiResponse(code = 200, message = "Estado de tarjeta de credito actualizada"),
+            @ApiResponse(code = 400, message = "Error al actualizar el tarjeta de credito cuenta")
     })
-    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRQ updateAccount) {
+    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
             return ResponseEntity.ok().build();
@@ -93,12 +92,13 @@ public class CreditCardController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @PostMapping("/create")
-    @ApiOperation(value = "Crea una tarjeta de credito", notes = "Crea una tarjeta de credito.")
+    @ApiOperation(value = "Crea una tarjeta de credito",
+            notes = "Crea una tarjeta de credito.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Tarjeta de credito creada"),
-        @ApiResponse(code = 400, message = "Error al crear una tarjeta de credito")
+            @ApiResponse(code = 200, message = "Tarjeta de credito creada"),
+            @ApiResponse(code = 400, message = "Error al crear una tarjeta de credito")
     })
     public ResponseEntity create(@RequestBody CreditCard creditCard) {
         try {

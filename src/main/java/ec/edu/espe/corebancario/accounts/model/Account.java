@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ec.edu.espe.corebancario.accounts.model;
 
 import java.math.BigDecimal;
@@ -26,30 +21,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "account", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"NUMBER"})})
-public class Account{
+        @UniqueConstraint(columnNames = {"NUMBER"})})
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_ACCOUNT", nullable = false)
     private Integer codigo;
-    
+
     @Column(name = "CLIENT_IDENTIFICATION", nullable = false, length = 13)
     private String clientIdentification;
-    
+
     @Column(name = "CREATION_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Column(name = "NUMBER", nullable = false, length = 12)
     private String number;
-    
+
     @Column(name = "BALANCE", nullable = false)
     private BigDecimal balance;
-    
+
     @Column(name = "STATUS", nullable = false, length = 3)
     private String status;
-        
+
     @JoinColumn(name = "TYPE", referencedColumnName = "COD_TYPE_ACCOUNT")
     private Integer type;
 }
