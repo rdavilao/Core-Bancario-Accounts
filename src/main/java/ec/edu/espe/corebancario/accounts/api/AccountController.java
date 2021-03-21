@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ec.edu.espe.corebancario.accounts.api;
 
-import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRQ;
-import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountBalanceRQ;
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountBalanceRq;
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
@@ -26,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(maxAge=3600)
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/corebancario/account")
 @Slf4j
@@ -39,10 +34,12 @@ public class AccountController {
     }
 
     @GetMapping("/listAccount/{id}")
-    @ApiOperation(value = "Busqueda de cuenta/as por número de identificacion del cliente", notes = "Busqueda de cuenta/as por número de identificacion del cliente. Un cliente puede tener varias cuentas o al menos una.")
+    @ApiOperation(value = "Busqueda de cuenta/as por número de identificacion del cliente",
+            notes = "Busqueda de cuenta/as por número de identificacion del cliente. "
+            + "Un cliente puede tener varias cuentas o al menos una.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
-        @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
+            @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
+            @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
     })
     public ResponseEntity listAccounts(@PathVariable String id) {
         try {
@@ -51,12 +48,13 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/findAccountByNumber/{number}")
-    @ApiOperation(value = "Busqueda de cuenta por número de cuenta", notes = "Busqueda de cuenta por número de cuenta. El numero de cuenta es único.")
+    @ApiOperation(value = "Busqueda de cuenta por número de cuenta",
+            notes = "Busqueda de cuenta por número de cuenta. El numero de cuenta es único.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta encontrada"),
-        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+            @ApiResponse(code = 200, message = "Cuenta encontrada"),
+            @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
     public ResponseEntity findAccountByNumber(@PathVariable String number) {
         try {
@@ -65,12 +63,13 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/findAccountById/{id}")
-    @ApiOperation(value = "Busqueda de cuenta por id cuenta", notes = "Busqueda de cuenta por id de cuenta. El numero de id de cuenta es único.")
+    @ApiOperation(value = "Busqueda de cuenta por id cuenta",
+            notes = "Busqueda de cuenta por id de cuenta. El numero de id de cuenta es único.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta encontrada"),
-        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+            @ApiResponse(code = 200, message = "Cuenta encontrada"),
+            @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
     public ResponseEntity findAccountById(@PathVariable Integer id) {
         try {
@@ -79,12 +78,13 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/findLastAccount/{identification}")
-    @ApiOperation(value = "Busqueda de la ultima cuenta creada de un cliente", notes = "Busqueda de la ultima cuenta creada de un cliente.")
+    @ApiOperation(value = "Busqueda de la ultima cuenta creada de un cliente",
+            notes = "Busqueda de la ultima cuenta creada de un cliente.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta encontrada"),
-        @ApiResponse(code = 404, message = "Cuenta no encontrada")
+            @ApiResponse(code = 200, message = "Cuenta encontrada"),
+            @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
     public ResponseEntity findLastAccountByIdentification(@PathVariable String identification) {
         try {
@@ -93,12 +93,14 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/balanceClient/{identification}")
-    @ApiOperation(value = "Balance de cuenta total del cliente", notes = "Balance de cuenta total del cliente. El balance de cuenta total de un cliente es la suma de balances de todas las cuentas de un mismo cliente")
+    @ApiOperation(value = "Balance de cuenta total del cliente",
+            notes = "Balance de cuenta total del cliente."
+            + "Es la suma de balances de todas las cuentas de un mismo cliente")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
-        @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
+            @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
+            @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
     })
     public ResponseEntity balanceClient(@PathVariable String identification) {
         try {
@@ -109,10 +111,11 @@ public class AccountController {
     }
 
     @PostMapping("/create")
-    @ApiOperation(value = "Crea una cuenta", notes = "Crea una cuenta del cliente. Las cuentas permiten realizar transacciones.")
+    @ApiOperation(value = "Crea una cuenta",
+            notes = "Crea una cuenta del cliente. Las cuentas permiten realizar transacciones.")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Cuenta creada"),
-        @ApiResponse(code = 400, message = "Error al crear cuenta")
+            @ApiResponse(code = 200, message = "Cuenta creada"),
+            @ApiResponse(code = 400, message = "Error al crear cuenta")
     })
     public ResponseEntity create(@RequestBody Account account) {
         try {
@@ -124,12 +127,13 @@ public class AccountController {
     }
 
     @PutMapping("/updateStatus")
-    @ApiOperation(value = "Actualizar el estado de una cuenta", notes = "Actualiza el estado de una cuenta")
+    @ApiOperation(value = "Actualizar el estado de una cuenta",
+            notes = "Actualiza el estado de una cuenta")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Estado de cuenta actualizada"),
-        @ApiResponse(code = 400, message = "Error al actualizar el estado cuenta")
+            @ApiResponse(code = 200, message = "Estado de cuenta actualizada"),
+            @ApiResponse(code = 400, message = "Error al actualizar el estado cuenta")
     })
-    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRQ updateAccount) {
+    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
             return ResponseEntity.ok().build();
@@ -139,17 +143,18 @@ public class AccountController {
     }
 
     @PutMapping("/updateBalance")
-    @ApiOperation(value = "Actualizar el balance de una cuenta", notes = "Actualiza el balance de una cuenta")
+    @ApiOperation(value = "Actualizar el balance de una cuenta",
+            notes = "Actualiza el balance de una cuenta")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Balance de cuenta actualizada"),
-        @ApiResponse(code = 400, message = "Error al actualizar el balance de cuenta")
+            @ApiResponse(code = 200, message = "Balance de cuenta actualizada"),
+            @ApiResponse(code = 400, message = "Error al actualizar el balance de cuenta")
     })
-    public ResponseEntity updateBalance(@RequestBody UpdateAccountBalanceRQ updateAccount) {
+    public ResponseEntity updateBalance(@RequestBody UpdateAccountBalanceRq updateAccount) {
         try {
             this.service.updateBalance(updateAccount.getNumber(), updateAccount.getBalance());
             return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
             return ResponseEntity.badRequest().build();
         }
-    }    
+    }
 }
