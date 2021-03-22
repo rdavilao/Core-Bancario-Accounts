@@ -15,6 +15,9 @@
     <description>Banco Banquito accounts module</description>
     <properties>
         <java.version>11</java.version>
+        <sonar.projectKey>rdavilao_Core-Bancario-Accounts</sonar.projectKey>
+        <sonar.organization>rdavilao</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
