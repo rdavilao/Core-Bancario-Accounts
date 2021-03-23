@@ -10,6 +10,8 @@ import ec.edu.espe.corebancario.accounts.service.AccountService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,7 +43,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
             @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
     })
-    public ResponseEntity listAccounts(@PathVariable String id) {
+    public ResponseEntity<List<Account>> listAccounts(@PathVariable String id) {
         try {
             return ResponseEntity.ok(this.service.listAccounts(id));
         } catch (Exception e) {
@@ -56,7 +58,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta encontrada"),
             @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
-    public ResponseEntity findAccountByNumber(@PathVariable String number) {
+    public ResponseEntity<Account> findAccountByNumber(@PathVariable String number) {
         try {
             return ResponseEntity.ok(this.service.getAccountByNumber(number));
         } catch (Exception e) {
@@ -71,7 +73,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta encontrada"),
             @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
-    public ResponseEntity findAccountById(@PathVariable Integer id) {
+    public ResponseEntity<Account> findAccountById(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(this.service.getAccountById(id));
         } catch (Exception e) {
@@ -86,7 +88,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta encontrada"),
             @ApiResponse(code = 404, message = "Cuenta no encontrada")
     })
-    public ResponseEntity findLastAccountByIdentification(@PathVariable String identification) {
+    public ResponseEntity<Account> findLastAccountByIdentification(@PathVariable String identification) {
         try {
             return ResponseEntity.ok(this.service.getLastAccountByIdentification(identification));
         } catch (Exception e) {
@@ -102,7 +104,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta/as encontrada"),
             @ApiResponse(code = 404, message = "Cuenta/as no encontrada")
     })
-    public ResponseEntity balanceClient(@PathVariable String identification) {
+    public ResponseEntity<BigDecimal> balanceClient(@PathVariable String identification) {
         try {
             return ResponseEntity.ok(this.service.getBalanceAccount(identification));
         } catch (DocumentNotFoundException ex) {
@@ -117,7 +119,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta creada"),
             @ApiResponse(code = 400, message = "Error al crear cuenta")
     })
-    public ResponseEntity create(@RequestBody Account account) {
+    public ResponseEntity<Account> create(@RequestBody Account account) {
         try {
             this.service.createAccount(account);
             return ResponseEntity.ok().build();
@@ -133,7 +135,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Estado de cuenta actualizada"),
             @ApiResponse(code = 400, message = "Error al actualizar el estado cuenta")
     })
-    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
+    public ResponseEntity<UpdateAccountStatusRq> updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
             return ResponseEntity.ok().build();
@@ -149,7 +151,7 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Balance de cuenta actualizada"),
             @ApiResponse(code = 400, message = "Error al actualizar el balance de cuenta")
     })
-    public ResponseEntity updateBalance(@RequestBody UpdateAccountBalanceRq updateAccount) {
+    public ResponseEntity<UpdateAccountBalanceRq> updateBalance(@RequestBody UpdateAccountBalanceRq updateAccount) {
         try {
             this.service.updateBalance(updateAccount.getNumber(), updateAccount.getBalance());
             return ResponseEntity.ok().build();
