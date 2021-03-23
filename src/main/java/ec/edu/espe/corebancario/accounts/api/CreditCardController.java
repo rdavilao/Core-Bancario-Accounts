@@ -71,7 +71,8 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
             @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity<List<CreditCardRq>> listCreditCardClient(@RequestParam String identification, @RequestParam Integer type) {
+    public ResponseEntity<List<CreditCardRq>> listCreditCardClient(@RequestParam String identification,
+            @RequestParam Integer type) {
         try {
             return ResponseEntity.ok(this.service.listCreditCardByType(identification, type));
         } catch (Exception e) {

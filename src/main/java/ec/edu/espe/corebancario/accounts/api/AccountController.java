@@ -161,7 +161,7 @@ public class AccountController {
             this.service.updateBalance(updateAccount.getNumber(), updateAccount.getBalance());
             response = ResponseEntity.ok().build();
         } catch (UpdateException ex) {
-                response = ResponseEntity.badRequest().build();
+            response = ResponseEntity.badRequest().build();
         }
         return response;
     }
