@@ -40,11 +40,13 @@ public class AccountService {
                 this.accountRepo.save(account);
             } else {
                 log.error("Error al crear cuenta con cliente no existente: " + account.getClientIdentification());
-                throw new InsertException("Account", "Error al crear cuenta con cliente no existente: " 
+                throw new InsertException(Account.class.getSimpleName(),
+                        "Error al crear cuenta con cliente no existente: " 
                         + account.toString());
             }
         } catch (Exception e) {
-            throw new InsertException("Account", "Ocurrio un error al crear la cuenta: " + account.toString(), e);
+            throw new InsertException(Account.class.getSimpleName(),
+                    "Ocurrio un error al crear la cuenta: " + account.toString(), e);
         }
     }
 
@@ -73,15 +75,18 @@ public class AccountService {
                     this.accountRepo.save(accountUpdate);
                 } else {
                     log.error("Intento de cambio de estado a inactivo a una cuenta con balance distinto a 0.");
-                    throw new UpdateException("account", "Ocurrio un error al actualizar el estado de la de cuenta: " 
+                    throw new UpdateException(Account.class.getSimpleName(),
+                            "Ocurrio un error al actualizar el estado de la de cuenta: " 
                             + number);
                 }
             } else {
                 log.error("Intento de cambio de estado a cuenta no existente: " + number);
-                throw new UpdateException("account", "Ocurrio un error, no existe el numero de cuenta: " + number);
+                throw new UpdateException(Account.class.getSimpleName(),
+                        "Ocurrio un error, no existe el numero de cuenta: " + number);
             }
         } catch (Exception e) {
-            throw new UpdateException("account", "Ocurrio un error al actualizar el estado de la cuenta: " + number, e);
+            throw new UpdateException(Account.class.getSimpleName(),
+                    "Ocurrio un error al actualizar el estado de la cuenta: " + number, e);
         }
     }
 
@@ -95,15 +100,17 @@ public class AccountService {
                     this.accountRepo.save(accountUpdate);
                 } else {
                     log.error("Intento de cambio de balance a cuenta no activa: " + number);
-                    throw new UpdateException("account", "Ocurrio un error,"
+                    throw new UpdateException(Account.class.getSimpleName(), "Ocurrio un error,"
                             + " no se permite actualizar el balance a una cuenta inactiva: " + number);
                 }
             } else {
                 log.error("Intento de cambio de balance a cuenta no existente: " + number);
-                throw new UpdateException("account", "Ocurrio un error, no existe el numero de cuenta: " + number);
+                throw new UpdateException(Account.class.getSimpleName(),
+                        "Ocurrio un error, no existe el numero de cuenta: " + number);
             }
         } catch (Exception e) {
-            throw new UpdateException("account", "Ocurrio un error al actualizar el balance de la cuenta: "
+            throw new UpdateException(Account.class.getSimpleName(),
+                    "Ocurrio un error al actualizar el balance de la cuenta: "
                     + number, e);
         }
     }
@@ -133,10 +140,10 @@ public class AccountService {
             if (account != null) {
                 return account;
             } else {
-                throw new DocumentNotFoundException("Cuenta no existente");
+                throw new DocumentNotFoundException("Cuenta buscada por numero no existente");
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Error al obtener cuenta");
+            throw new DocumentNotFoundException("Error al buscar por numero de cuenta");
         }
     }
 
@@ -144,13 +151,12 @@ public class AccountService {
         try {
             Optional<Account> accountFind = this.accountRepo.findById(id);
             if (!accountFind.isEmpty()) {
-                Account account = accountFind.get();
-                return account;
+                return accountFind.get();
             } else {
-                throw new DocumentNotFoundException("Cuenta no existente");
+                throw new DocumentNotFoundException("Cuenta buscada por ID no existente");
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Error al obtener cuenta");
+            throw new DocumentNotFoundException("Error al buscar cuenta por codigo");
         }
     }
 
@@ -160,13 +166,12 @@ public class AccountService {
                     this.accountRepo
                             .findByClientIdentificationOrderByCreationDateDesc(identification, PageRequest.of(0, 1));
             if (!accountFind.isEmpty()) {
-                Account account = accountFind.get(0);
-                return account;
+                return accountFind.get(0);
             } else {
-                throw new DocumentNotFoundException("Cuenta no existente");
+                throw new DocumentNotFoundException("Ultima cuenta no existente");
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Error al obtener cuenta");
+            throw new DocumentNotFoundException("Error al obtener ultima cuenta");
         }
     }
 
