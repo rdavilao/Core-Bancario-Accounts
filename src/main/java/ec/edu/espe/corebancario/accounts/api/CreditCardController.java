@@ -1,5 +1,6 @@
 package ec.edu.espe.corebancario.accounts.api;
 
+import ec.edu.espe.corebancario.accounts.api.dto.CreditCardRq;
 import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
@@ -8,6 +9,7 @@ import ec.edu.espe.corebancario.accounts.service.CreditCardService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,7 +41,7 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Tarjeta de credito encontrada"),
             @ApiResponse(code = 404, message = "No existen tarjeta de credito")
     })
-    public ResponseEntity findCreditCard(@PathVariable String number) {
+    public ResponseEntity<CreditCard> findCreditCard(@PathVariable String number) {
         try {
             return ResponseEntity.ok(this.service.findCreditCard(number));
         } catch (Exception e) {
@@ -54,7 +56,7 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
             @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity listAccounts(@PathVariable String identification) {
+    public ResponseEntity<List<CreditCardRq>> listAccounts(@PathVariable String identification) {
         try {
             return ResponseEntity.ok(this.service.listCreditCardActiva(identification));
         } catch (Exception e) {
@@ -69,7 +71,7 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Tarjetas de credito activas encontradas"),
             @ApiResponse(code = 404, message = "No existen tarjetas de credito activas")
     })
-    public ResponseEntity listCreditCardClient(@RequestParam String identification, @RequestParam Integer type) {
+    public ResponseEntity<List<CreditCardRq>> listCreditCardClient(@RequestParam String identification, @RequestParam Integer type) {
         try {
             return ResponseEntity.ok(this.service.listCreditCardByType(identification, type));
         } catch (Exception e) {
@@ -85,12 +87,14 @@ public class CreditCardController {
             @ApiResponse(code = 400, message = "Error al actualizar el tarjeta de credito cuenta")
     })
     public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
+        ResponseEntity<?> response;
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
-            return ResponseEntity.ok().build();
+            response = ResponseEntity.ok().build();
         } catch (UpdateException ex) {
-            return ResponseEntity.badRequest().build();
+            response = ResponseEntity.badRequest().build();
         }
+        return response;
     }
 
     @PostMapping("/create")
@@ -101,11 +105,13 @@ public class CreditCardController {
             @ApiResponse(code = 400, message = "Error al crear una tarjeta de credito")
     })
     public ResponseEntity create(@RequestBody CreditCard creditCard) {
+        ResponseEntity<?> response;
         try {
             this.service.createCreditCard(creditCard);
-            return ResponseEntity.ok().build();
+            response = ResponseEntity.ok().build();
         } catch (InsertException ex) {
-            return ResponseEntity.badRequest().build();
+            response = ResponseEntity.badRequest().build();
         }
+        return response;
     }
 }
