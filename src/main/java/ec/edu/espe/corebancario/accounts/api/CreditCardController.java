@@ -87,15 +87,13 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Estado de tarjeta de credito actualizada"),
             @ApiResponse(code = 400, message = "Error al actualizar el tarjeta de credito cuenta")
     })
-    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
-        ResponseEntity<?> response;
+    public ResponseEntity<UpdateAccountStatusRq> updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
-            response = ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
-            response = ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-        return response;
     }
 
     @PostMapping("/create")
@@ -105,14 +103,12 @@ public class CreditCardController {
             @ApiResponse(code = 200, message = "Tarjeta de credito creada"),
             @ApiResponse(code = 400, message = "Error al crear una tarjeta de credito")
     })
-    public ResponseEntity create(@RequestBody CreditCard creditCard) {
-        ResponseEntity<?> response;
+    public ResponseEntity<CreditCard> create(@RequestBody CreditCard creditCard) {
         try {
             this.service.createCreditCard(creditCard);
-            response = ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
         } catch (InsertException ex) {
-            response = ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-        return response;
     }
 }

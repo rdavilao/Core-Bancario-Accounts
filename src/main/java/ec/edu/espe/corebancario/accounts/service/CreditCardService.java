@@ -73,7 +73,7 @@ public class CreditCardService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
             if (!accounts.isEmpty()) {
-                List<CreditCardRq> creditCardsRq = new ArrayList<>();
+                List<CreditCardRq> creditCardsRq = new ArrayList<CreditCardRq>();
                 for (int i = 0; i < accounts.size(); i++) {
                     if (4 == accounts.get(i).getType() || 5 == accounts.get(i).getType()) {
                         List<CreditCard> creditCards =
@@ -140,7 +140,6 @@ public class CreditCardService {
         } catch (Exception e) {
             throw new DocumentNotFoundException("Error en buscar tarjetas de credito de un cliente" + e);
         }
-
     }
 
     public void updateStatus(String number, String newStatus) throws UpdateException {

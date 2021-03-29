@@ -119,15 +119,13 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Cuenta creada"),
             @ApiResponse(code = 400, message = "Error al crear cuenta")
     })
-    public ResponseEntity create(@RequestBody Account account) {
-        ResponseEntity<?> response;
+    public ResponseEntity<Account> create(@RequestBody Account account) {
         try {
             this.service.createAccount(account);
-            response = ResponseEntity.ok().build();            
+            return ResponseEntity.ok().build();            
         } catch (InsertException ex) {
-            response = ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-        return response;
     }
 
     @PutMapping("/updateStatus")
@@ -137,15 +135,13 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Estado de cuenta actualizada"),
             @ApiResponse(code = 400, message = "Error al actualizar el estado cuenta")
     })
-    public ResponseEntity updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
-        ResponseEntity<?> response;
+    public ResponseEntity<UpdateAccountStatusRq> updateStatus(@RequestBody UpdateAccountStatusRq updateAccount) {
         try {
             this.service.updateStatus(updateAccount.getNumber(), updateAccount.getState());
-            response = ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
-            response = ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-        return response;
     }
 
     @PutMapping("/updateBalance")
@@ -155,14 +151,12 @@ public class AccountController {
             @ApiResponse(code = 200, message = "Balance de cuenta actualizada"),
             @ApiResponse(code = 400, message = "Error al actualizar el balance de cuenta")
     })
-    public ResponseEntity updateBalance(@RequestBody UpdateAccountBalanceRq updateAccount) {
-        ResponseEntity<?> response;
+    public ResponseEntity<UpdateAccountBalanceRq> updateBalance(@RequestBody UpdateAccountBalanceRq updateAccount) {
         try {
             this.service.updateBalance(updateAccount.getNumber(), updateAccount.getBalance());
-            response = ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
         } catch (UpdateException ex) {
-            response = ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-        return response;
     }
 }
