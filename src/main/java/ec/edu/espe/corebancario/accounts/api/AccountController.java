@@ -35,6 +35,7 @@ public class AccountController {
         this.service = service;
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/listAccount/{id}")
     @ApiOperation(value = "Busqueda de cuenta/as por número de identificacion del cliente",
             notes = "Busqueda de cuenta/as por número de identificacion del cliente. "
@@ -51,6 +52,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/findAccountByNumber/{number}")
     @ApiOperation(value = "Busqueda de cuenta por número de cuenta",
             notes = "Busqueda de cuenta por número de cuenta. El numero de cuenta es único.")
@@ -66,6 +68,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/findAccountById/{id}")
     @ApiOperation(value = "Busqueda de cuenta por id cuenta",
             notes = "Busqueda de cuenta por id de cuenta. El numero de id de cuenta es único.")
@@ -81,6 +84,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/findLastAccount/{identification}")
     @ApiOperation(value = "Busqueda de la ultima cuenta creada de un cliente",
             notes = "Busqueda de la ultima cuenta creada de un cliente.")
@@ -96,6 +100,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/balanceClient/{identification}")
     @ApiOperation(value = "Balance de cuenta total del cliente",
             notes = "Balance de cuenta total del cliente."
@@ -112,6 +117,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @PostMapping("/create")
     @ApiOperation(value = "Crea una cuenta",
             notes = "Crea una cuenta del cliente. Las cuentas permiten realizar transacciones.")
@@ -128,6 +134,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @PutMapping("/updateStatus")
     @ApiOperation(value = "Actualizar el estado de una cuenta",
             notes = "Actualiza el estado de una cuenta")
@@ -144,6 +151,7 @@ public class AccountController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @PutMapping("/updateBalance")
     @ApiOperation(value = "Actualizar el balance de una cuenta",
             notes = "Actualiza el balance de una cuenta")
