@@ -34,6 +34,7 @@ public class CreditCardController {
         this.service = service;
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/findCreditCard/{number}")
     @ApiOperation(value = "Busqueda de tarjeta de credito por su numero", 
             notes = "Una numero de tarjeta de credito es unico para cada tarjeta")
@@ -49,6 +50,7 @@ public class CreditCardController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/listCreditCard/{identification}")
     @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta", 
             notes = "Una cuenta puede tener asociada varias tarjetas de credito")
@@ -64,6 +66,7 @@ public class CreditCardController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/listCreditCardClient")
     @ApiOperation(value = "Busqueda de tarjetas de credito activas asociadas a una cuenta",
             notes = "Una cuenta puede tener asociada varias tarjetas de credito")
@@ -80,6 +83,7 @@ public class CreditCardController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @PutMapping("/updateStatus")
     @ApiOperation(value = "Actualizar el estado de una tarjeta de credito",
             notes = "Actualiza el estado de una tarjeta de credito")
@@ -96,6 +100,7 @@ public class CreditCardController {
         }
     }
 
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @PostMapping("/create")
     @ApiOperation(value = "Crea una tarjeta de credito",
             notes = "Crea una tarjeta de credito.")
