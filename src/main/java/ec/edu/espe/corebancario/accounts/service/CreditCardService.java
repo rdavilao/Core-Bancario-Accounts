@@ -49,9 +49,10 @@ public class CreditCardService {
             creditCard.setCreationDate(new Date());
             creditCard.setExpirationDate(expirationDate());
             creditCard.setStatus(StateAccountEnum.INACTIVO.getEstado());
-            this.creditCardRepo.save(creditCard);
+            this.creditCardRepo.save(creditCard);            
         } catch (Exception e) {
-            throw new InsertException("CreditCard", "Ocurrio un error al crear la la tarjeta de credito: " 
+            throw new InsertException(CreditCardService.class.getSimpleName(),
+                    "Ocurrio un error al crear la la tarjeta de credito: " 
                     + creditCard.toString(), e);
         }
     }
