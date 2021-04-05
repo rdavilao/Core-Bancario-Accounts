@@ -1,5 +1,6 @@
 package ec.edu.espe.corebancario.accounts.service;
 
+import ec.edu.espe.corebancario.accounts.enums.StateAccountEnum;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
@@ -20,13 +21,13 @@ import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceUnitTest {
-
+    
     @Mock
     private AccountRepository repository;
-
+    
     @InjectMocks
     Account account;
-
+    
     @BeforeEach
     public void setUp() {
         account = new Account();
@@ -44,7 +45,7 @@ public class AccountServiceUnitTest {
             Logger.getLogger(AccountServiceUnitTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     @Test
     public void givenNumberReturnAccount() {
         String number = "270000000001";
@@ -58,7 +59,7 @@ public class AccountServiceUnitTest {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     @Test
     public void givenIdReturnAccount() {
         Integer id = 1;
@@ -72,8 +73,39 @@ public class AccountServiceUnitTest {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
 
     /*
+    @Test
+    public void givenIdentificationReturnBalance() {
+        String identification = "1725456055";
+        List<Account> accounts
+                = repository.findByClientIdentification(identification);
+        AccountService service = new AccountService(repository);        
+        Assertions.assertFalse(true);
+        Assertions.assertFalse(accounts.isEmpty());
+    }
+    
+    @Test
+    public void givenIdentificationReturnBalance() {
+        String identification = "1725456055";
+        List<Account> accounts
+                = repository.findByClientIdentification(identification);
+        AccountService service = new AccountService(repository);        
+        Assertions.assertFalse(true);
+        Assertions.assertFalse(accounts.isEmpty());
+    }
+    
+    @Test
+    public void givenIdentificationReturnBalance() {
+        String identification = "1725456055";
+        List<Account> accounts
+                = repository.findByClientIdentification(identification);
+        AccountService service = new AccountService(repository);
+        Assertions.assertFalse(accounts.isEmpty());
+    }
+    
     @Test
     public void givenIdentificationReturnBalanceAccountOfThis(){
         
@@ -98,28 +130,28 @@ public class AccountServiceUnitTest {
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.listAccounts(identification));
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.getBalanceAccount(identification));
     }
-
+    
     @Test
     public void givenNullNumberThrowDocumentNotFoundException() {
         String number = null;
         AccountService service = new AccountService(repository);
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.getAccountByNumber(number));
     }
-
+    
     @Test
     public void givenNullIdThrowDocumentNotFoundException() {
         Integer id = null;
         AccountService service = new AccountService(repository);
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.getAccountById(id));
     }
-
+    
     @Test
     public void givenNullIdentificationOnLastAccountThrowDocumentNotFoundException() {
         String identification = null;
         AccountService service = new AccountService(repository);
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.getLastAccountByIdentification(identification));
     }
-
+    
     @Test
     public void givenNullNumberAndStatusThrowUpdateException() {
         String number = null;
@@ -135,6 +167,4 @@ public class AccountServiceUnitTest {
         AccountService service = new AccountService(repository);
         Assertions.assertThrows(UpdateException.class, () -> service.updateBalance(number, balance));
     }
-    
-    
 }

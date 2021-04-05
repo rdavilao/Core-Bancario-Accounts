@@ -1,7 +1,9 @@
 package ec.edu.espe.corebancario.accounts.api;
 
 import ec.edu.espe.corebancario.accounts.api.dto.CreditCardRq;
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
+import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.service.CreditCardService;
 import java.util.ArrayList;
@@ -48,6 +50,13 @@ public class CreditCardControllerUnitTest {
         Assertions.assertEquals(response, controller.findCreditCard(number));
     }
     
+    @Test
+    public void givenUpdateAccountStatusRqReturnOk(){
+        UpdateAccountStatusRq updateAccount = new UpdateAccountStatusRq();
+        CreditCardController controller = new CreditCardController(service);        
+        ResponseEntity response = ResponseEntity.ok().build();
+        Assertions.assertEquals(response, controller.updateStatus(updateAccount));        
+    }
     /*
     @Test
     public void givenIdentificationReturnListOfCreditCardRq(){
@@ -92,5 +101,36 @@ public class CreditCardControllerUnitTest {
         }
         ResponseEntity response = ResponseEntity.notFound().build();
          Assertions.assertEquals(response, controller.listAccounts(identification));
+    }
+    
+    @Test
+    public void givenNullIdentificationAndTypeReturnNotFound(){
+        String identification = null;
+        Integer type = 1;
+        CreditCardController controller = new CreditCardController(service);
+        try {
+            Mockito.doThrow(DocumentNotFoundException.class)
+                    .when (service)
+                    .listCreditCardByType(identification,type);
+        } catch (DocumentNotFoundException ex) {
+           Logger.getLogger(CreditCardControllerUnitTest.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        ResponseEntity response = ResponseEntity.notFound().build();
+         Assertions.assertEquals(response, controller.listCreditCardClient(identification,type));
+    }
+    
+    @Test
+    public void givenBadUpdateAccountStatusRqReturnBadRequest(){
+        UpdateAccountStatusRq updateAccountStatusRq = new UpdateAccountStatusRq();
+        CreditCardController controller = new CreditCardController(service);
+        try {
+            Mockito.doThrow(UpdateException.class)
+                    .when (service)
+                    .updateStatus(updateAccountStatusRq.getNumber(),updateAccountStatusRq.getState());
+        } catch (UpdateException ex) {
+           Logger.getLogger(AccountControllerUnitTest.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        ResponseEntity response = ResponseEntity.badRequest().build();
+        Assertions.assertEquals(response, controller.updateStatus(updateAccountStatusRq));
     }
 }

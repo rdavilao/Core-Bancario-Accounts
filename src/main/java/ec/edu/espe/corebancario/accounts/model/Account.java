@@ -23,7 +23,8 @@ import lombok.Setter;
 @Table(name = "account", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"NUMBER"})})
 public class Account {
-
+    
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_ACCOUNT", nullable = false)

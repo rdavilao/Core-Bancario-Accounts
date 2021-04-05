@@ -36,7 +36,7 @@ public class AccountController {
         this.service = service;
     }
 
-    
+    @PreAuthorize("hasRole('admin') OR hasRole('accountManager')")
     @GetMapping("/listAccount/{id}")
     @ApiOperation(value = "Busqueda de cuenta/as por número de identificacion del cliente",
             notes = "Busqueda de cuenta/as por número de identificacion del cliente. "

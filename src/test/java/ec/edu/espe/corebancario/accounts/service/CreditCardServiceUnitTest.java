@@ -62,8 +62,18 @@ public class CreditCardServiceUnitTest {
         CreditCardService service = new CreditCardService(creditCardRepository,accountRepository,typeAccountRepository);
         Assertions.assertThrows(InsertException.class, () -> service.createCreditCard(creditCard));
     }
-     */
-
+    @Test
+    public void givenOneCreditCardCreateThis() {
+        CreditCard creditCard = new CreditCard();
+        CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository); 
+        try {
+            service.createCreditCard(creditCard);
+        } catch (InsertException ex) {
+            Logger.getLogger(CreditCardServiceUnitTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     */   
+    
     @Test
     public void givenIdentificationReturnListOfCreditCardEnable() {
         String identification = "1725456055";        
@@ -72,7 +82,7 @@ public class CreditCardServiceUnitTest {
         try {
             Assertions.assertEquals(creditCardsRq, service.listCreditCardActiva(identification));
         } catch (DocumentNotFoundException ex) {
-            Logger.getLogger(AccountServiceUnitTest.class
+            Logger.getLogger(CreditCardServiceUnitTest.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -85,7 +95,7 @@ public class CreditCardServiceUnitTest {
         try {
             Assertions.assertEquals(creditCard, service.findCreditCard(number));
         } catch (DocumentNotFoundException ex) {
-            Logger.getLogger(AccountServiceUnitTest.class
+            Logger.getLogger(CreditCardServiceUnitTest.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

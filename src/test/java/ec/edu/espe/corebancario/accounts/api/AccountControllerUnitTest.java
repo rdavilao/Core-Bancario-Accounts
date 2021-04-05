@@ -1,7 +1,9 @@
 package ec.edu.espe.corebancario.accounts.api;
 
+import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountBalanceRq;
 import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
+import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.service.AccountService;
 import java.math.BigDecimal;
@@ -118,6 +120,14 @@ public class AccountControllerUnitTest {
     }
     
     @Test
+    public void givenUpdateAccountBalanceRqReturnOk(){
+         UpdateAccountBalanceRq updateAccount = new  UpdateAccountBalanceRq();
+        AccountController controller = new AccountController(service);        
+        ResponseEntity response = ResponseEntity.ok().build();
+        Assertions.assertEquals(response, controller.updateBalance(updateAccount));        
+    }   
+    
+    @Test
     public void givenNullIdentificationReturnNotFound(){
         String identification = null;
         AccountController controller = new AccountController(service);
@@ -128,12 +138,16 @@ public class AccountControllerUnitTest {
             Mockito.doThrow(DocumentNotFoundException.class)
                     .when (service)
                     .getLastAccountByIdentification(identification);
+            Mockito.doThrow(DocumentNotFoundException.class)
+                    .when (service)
+                    .getBalanceAccount(identification);
         } catch (DocumentNotFoundException ex) {
            Logger.getLogger(AccountControllerUnitTest.class.getName()).log(Level.SEVERE, null, ex); 
         }        
         ResponseEntity response = ResponseEntity.notFound().build();
         Assertions.assertEquals(response, controller.listAccounts(identification));        
-        Assertions.assertEquals(response, controller.findLastAccountByIdentification(identification));        
+        Assertions.assertEquals(response, controller.findLastAccountByIdentification(identification));
+        Assertions.assertEquals(response, controller.balanceClient(identification));          
     }
     
     @Test
@@ -164,5 +178,35 @@ public class AccountControllerUnitTest {
         }
         ResponseEntity response = ResponseEntity.notFound().build();
         Assertions.assertEquals(response, controller.findAccountById(id));              
+    }
+    
+    @Test
+    public void givenBadUpdateAccountStatusRqReturnBadRequest(){
+        UpdateAccountStatusRq updateAccountStatusRq = new UpdateAccountStatusRq();
+        AccountController controller = new AccountController(service);
+        try {
+            Mockito.doThrow(UpdateException.class)
+                    .when (service)
+                    .updateStatus(updateAccountStatusRq.getNumber(),updateAccountStatusRq.getState());
+        } catch (UpdateException ex) {
+           Logger.getLogger(AccountControllerUnitTest.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        ResponseEntity response = ResponseEntity.badRequest().build();
+        Assertions.assertEquals(response, controller.updateStatus(updateAccountStatusRq));
+    }
+    
+    @Test
+    public void givenBadUpdateAccountBalanceRqReturnBadRequest(){
+        UpdateAccountBalanceRq updateAccountBalanceRq = new UpdateAccountBalanceRq();
+        AccountController controller = new AccountController(service);
+        try {
+            Mockito.doThrow(UpdateException.class)
+                    .when (service)
+                    .updateBalance(updateAccountBalanceRq.getNumber(),updateAccountBalanceRq.getBalance());
+        } catch (UpdateException ex) {
+           Logger.getLogger(AccountControllerUnitTest.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        ResponseEntity response = ResponseEntity.badRequest().build();
+        Assertions.assertEquals(response, controller.updateBalance(updateAccountBalanceRq));
     }
 }

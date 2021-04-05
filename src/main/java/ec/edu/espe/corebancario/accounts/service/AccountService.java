@@ -3,12 +3,14 @@ package ec.edu.espe.corebancario.accounts.service;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import ec.edu.espe.corebancario.accounts.constants.DomainConstant;
 import ec.edu.espe.corebancario.accounts.enums.StateAccountEnum;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
+import ec.edu.espe.corebancario.accounts.security.Authorization;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +31,10 @@ public class AccountService {
 
     public void createAccount(Account account) throws InsertException {
         try {
-            HttpResponse<JsonNode> request = Unirest.get("http://localhost:8081/api/corebancario/client/findClientById/{id}")
+            Authorization authorizationRq = new Authorization("rdavila", "espe123.");
+            String authorization = authorizationRq.tokenAuthorizate();
+            HttpResponse<JsonNode> request = Unirest.get(DomainConstant.DOMAINCLIENT + "/findClientById/{id}")
+                    .header("Authorization", authorization)
                     .routeParam("id", account.getClientIdentification()).asJson();
             if (200 == request.getStatus()) {
                 account.setCreationDate(new Date());
@@ -41,7 +46,7 @@ public class AccountService {
             } else {
                 log.error("Error al crear cuenta con cliente no existente: " + account.getClientIdentification());
                 throw new InsertException(Account.class.getSimpleName(),
-                        "Error al crear cuenta con cliente no existente: " 
+                        "Error al crear cuenta con cliente no existente: "
                         + account.toString());
             }
         } catch (Exception e) {
@@ -59,7 +64,7 @@ public class AccountService {
                 throw new DocumentNotFoundException("No existen cuentas asociadas al cliente: " + identification);
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Ocurrio un error en listar las cuentas del cliente: " 
+            throw new DocumentNotFoundException("Ocurrio un error en listar las cuentas del cliente: "
                     + identification);
         }
     }
@@ -69,14 +74,14 @@ public class AccountService {
             Account accountUpdate = this.accountRepo.findByNumber(number);
             if (accountUpdate != null) {
                 log.info("Cuenta: " + number + " se actualizo el estado a: " + newStatus);
-                if (!(!accountUpdate.getBalance().equals(new BigDecimal(0))  
+                if (!(!accountUpdate.getBalance().equals(new BigDecimal(0))
                         && StateAccountEnum.INACTIVO.getEstado().equals(newStatus))) {
                     accountUpdate.setStatus(newStatus);
                     this.accountRepo.save(accountUpdate);
                 } else {
                     log.error("Intento de cambio de estado a inactivo a una cuenta con balance distinto a 0.");
                     throw new UpdateException(Account.class.getSimpleName(),
-                            "Ocurrio un error al actualizar el estado de la de cuenta: " 
+                            "Ocurrio un error al actualizar el estado de la de cuenta: "
                             + number);
                 }
             } else {
@@ -162,8 +167,8 @@ public class AccountService {
 
     public Account getLastAccountByIdentification(String identification) throws DocumentNotFoundException {
         try {
-            List<Account> accountFind =
-                    this.accountRepo
+            List<Account> accountFind
+                    = this.accountRepo
                             .findByClientIdentificationOrderByCreationDateDesc(identification, PageRequest.of(0, 1));
             if (!accountFind.isEmpty()) {
                 return accountFind.get(0);
