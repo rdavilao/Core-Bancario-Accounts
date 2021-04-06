@@ -71,8 +71,8 @@ public class CreditCardControllerUnitTest {
         }
         ResponseEntity response = ResponseEntity.ok(result);
         Assertions.assertEquals(response, controller.findCreditCard(identification));
-    }*/
-    
+    }
+    */
     @Test
     public void givenNullNumberReturnNotFound(){
         String number = null;

@@ -5,6 +5,7 @@ import ec.edu.espe.corebancario.accounts.enums.StateAccountEnum;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.InsertException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
+import ec.edu.espe.corebancario.accounts.model.Account;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.repository.AccountRepository;
 import ec.edu.espe.corebancario.accounts.repository.CreditCardRepository;
@@ -14,12 +15,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -28,24 +30,22 @@ public class CreditCardServiceUnitTest {
 
     @Mock
     private CreditCardRepository creditCardRepository;
+    @Mock
     private AccountRepository accountRepository;
+    @Mock
     private TypeAccountRepository typeAccountRepository;
 
     @InjectMocks
-    private CreditCard creditCard;
     private CreditCardService service;
-
-    @BeforeEach
-    public void setUp() {
-        creditCard = new CreditCard();
-    }
 
     @Test
     public void givenCreditCardCreateCreditCard() {
-        creditCard.setCodAccount(1);
+        CreditCard creditCard = new CreditCard();
+        creditCard.setCodAccount(5);
         creditCard.setLimitAccount(100);
         try {
             service.createCreditCard(creditCard);
+            verify(creditCardRepository, times(1)).save(creditCard);
         } catch (InsertException ex) {
             Logger.getLogger(CreditCardServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
@@ -54,77 +54,63 @@ public class CreditCardServiceUnitTest {
     }
 
     @Test
-    public void givenNumberAndStatsUpdateCreditCardStatus(){
-        String number = "4245000000000001";
+    public void givenNumberAndStatsUpdateCreditCardStatus() {
+        String number = "446758270000000004";
         String status = StateAccountEnum.INACTIVO.getEstado();
+        CreditCard creditCard = new CreditCard();
+        creditCard.setCodAccount(5);
+        creditCard.setNumber(number);
+        creditCard.setStatus(status);
         try {
-            service.updateStatus(number,status);
+            when(creditCardRepository.findByNumber(any())).thenReturn(creditCard);
+            service.updateStatus(number, status);
+            verify(creditCardRepository, times(1)).save(creditCard);
         } catch (UpdateException ex) {
             Logger.getLogger(CreditCardServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(CreditCardServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    /*
+
     @Test
-    public void givenIdentificationReturnListOfCreditCardEnable(){
-        String identification = "1725456055";
-        List<Account> accounts = accountRepository.findByClientIdentification(identification);        
-        CreditCardService service = new CreditCardService(creditCardRepository,accountRepository,typeAccountRepository);
+    public void givenIdentificationReturnListOfCreditCardEnable() {
+        String identification = "1804915617";
+        CreditCardService instance = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository);
         try {
-            Assertions.assertEquals(accounts, service.listCreditCardActiva(identification));
+            List<CreditCardRq> result = instance.listCreditCardActiva(identification);
+
+            Assertions.assertEquals(result, instance.listCreditCardActiva(identification));
         } catch (DocumentNotFoundException ex) {
-            Logger.getLogger(AccountServiceUnitTest.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    @Test
-    public void givenNullCreditCardThrowInsertException(){
-        CreditCard creditCard = null; 
-        CreditCardService service = new CreditCardService(creditCardRepository,accountRepository,typeAccountRepository);
-        Assertions.assertThrows(InsertException.class, () -> service.createCreditCard(creditCard));
-    }
-    @Test
-    public void givenOneCreditCardCreateThis() {
-        CreditCard creditCard = new CreditCard();
-        CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository); 
-        try {
-            service.createCreditCard(creditCard);
-        } catch (InsertException ex) {
             Logger.getLogger(CreditCardServiceUnitTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @Test
-    public void GivenCreditCardAndProducedErrorCreatingCreditCardThrowInsertException() {
-        when(creditCardRepository.save(any())).thenThrow(InsertException.class);
-        Assertions.assertThrows(InsertException.class, () -> service.createCreditCard(creditCard));
-    }
-     */    
-    @Test
-    public void givenIdentificationReturnListOfCreditCardEnable() {
-        String identification = "1725456055";
-        List<CreditCardRq> creditCardsRq = new ArrayList<CreditCardRq>();
-        CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository);
+    public void givenIdentificationReturnListOfCreditCardByType() {
+        String identification = "1804915617";
+        Integer type = 1;
+        List<Account> accounts = new ArrayList<>();
         try {
-            Assertions.assertEquals(creditCardsRq, service.listCreditCardActiva(identification));
+            when(accountRepository.findByClientIdentificationAndType(identification, type)).thenReturn(accounts);
+            service.listCreditCardByType(identification, type);
         } catch (DocumentNotFoundException ex) {
-            Logger.getLogger(CreditCardServiceUnitTest.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CreditCardServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Test
     public void givenNumberReturnCreditCard() {
-        String number = "4245000000000001";
+        String number = "446758270000000004";
+        //AQUIIIIIIIIIIIIIIIII
         CreditCard creditCard = creditCardRepository.findByNumber(number);
-        CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository);
         try {
             Assertions.assertEquals(creditCard, service.findCreditCard(number));
         } catch (DocumentNotFoundException ex) {
             Logger.getLogger(CreditCardServiceUnitTest.class
                     .getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(CreditCardServiceUnitTest.class
+                    .getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -150,12 +136,5 @@ public class CreditCardServiceUnitTest {
         Integer type = 4;
         CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository);
         Assertions.assertThrows(DocumentNotFoundException.class, () -> service.listCreditCardByType(identification, type));
-    }
-
-    @Test
-    public void givenEmptyCreditCardThrowInsertException() {
-        CreditCard creditCard = new CreditCard();
-        CreditCardService service = new CreditCardService(creditCardRepository, accountRepository, typeAccountRepository);
-        Assertions.assertThrows(InsertException.class, () -> service.createCreditCard(creditCard));
     }
 }

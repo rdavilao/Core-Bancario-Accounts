@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,14 +50,26 @@ public class AccountServiceUnitTest {
     }
 
     @Test
+    public void givenAccountReturnInsertExeption() {
+        account.setClientIdentification("172545604878987");
+        account.setType(0);
+        try {
+            service.createAccount(account);
+            verify(repository, times(1)).save(account);
+            service.createAccount(account);
+        } catch (InsertException ex) {
+            Logger.getLogger(AccountServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Test
     public void givenNumberAndStatusUpdateAccountStatus() {
-        String number = "270000000001";
+        String number = "270000000003";
         String status = StateAccountEnum.INACTIVO.getEstado();
         try {
-            service.updateStatus(number,status);
+            service.updateStatus(number, status);
+            verify(repository, times(1)).save(account);
         } catch (UpdateException ex) {
-            Logger.getLogger(AccountServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
             Logger.getLogger(AccountServiceUnitTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -96,7 +110,7 @@ public class AccountServiceUnitTest {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Test
     public void givenNullIdentificationThrowDocumentNotFoundException() {
         String identification = null;

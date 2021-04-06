@@ -49,10 +49,10 @@ public class CreditCardService {
             creditCard.setCreationDate(new Date());
             creditCard.setExpirationDate(expirationDate());
             creditCard.setStatus(StateAccountEnum.INACTIVO.getEstado());
-            this.creditCardRepo.save(creditCard);            
+            this.creditCardRepo.save(creditCard);
         } catch (Exception e) {
             throw new InsertException(CreditCardService.class.getSimpleName(),
-                    "Ocurrio un error al crear la la tarjeta de credito: " 
+                    "Ocurrio un error al crear la la tarjeta de credito: "
                     + creditCard.toString(), e);
         }
     }
@@ -77,8 +77,8 @@ public class CreditCardService {
                 List<CreditCardRq> creditCardsRq = new ArrayList<CreditCardRq>();
                 for (int i = 0; i < accounts.size(); i++) {
                     if (4 == accounts.get(i).getType() || 5 == accounts.get(i).getType()) {
-                        List<CreditCard> creditCards =
-                                this.creditCardRepo.findByCodAccountAndStatus(
+                        List<CreditCard> creditCards
+                                = this.creditCardRepo.findByCodAccountAndStatus(
                                         accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
                         if (!creditCards.isEmpty()) {
                             for (int j = 0; j < creditCards.size(); j++) {
@@ -98,11 +98,11 @@ public class CreditCardService {
                 }
                 return creditCardsRq;
             } else {
-                throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: " 
+                throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: "
                         + identification);
             }
         } catch (Exception e) {
-            throw new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito " 
+            throw new DocumentNotFoundException("Ocurrio un error en listar las tarjetas de credito "
                     + e);
         }
     }
@@ -114,8 +114,8 @@ public class CreditCardService {
             if (!accounts.isEmpty()) {
                 List<CreditCardRq> creditCardsRq = new ArrayList<>();
                 for (int i = 0; i < accounts.size(); i++) {
-                    List<CreditCard> creditCards =
-                            this.creditCardRepo
+                    List<CreditCard> creditCards
+                            = this.creditCardRepo
                                     .findByCodAccountAndStatus(
                                             accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
                     if (!creditCards.isEmpty()) {
@@ -152,7 +152,7 @@ public class CreditCardService {
                 this.creditCardRepo.save(creditCardUpdate);
             } else {
                 log.error("Intento de cambio de estado a una tarjeta de credito no existente");
-                throw new UpdateException("credit card", 
+                throw new UpdateException("credit card",
                         "Ocurrio un error al actualizar el estado de la tarjeta de credito: " + number);
             }
         } catch (Exception e) {
