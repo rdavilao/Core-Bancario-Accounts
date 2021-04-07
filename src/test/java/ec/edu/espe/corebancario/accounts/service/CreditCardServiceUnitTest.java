@@ -101,7 +101,6 @@ public class CreditCardServiceUnitTest {
     @Test
     public void givenNumberReturnCreditCard() {
         String number = "446758270000000004";
-        //AQUIIIIIIIIIIIIIIIII
         CreditCard creditCard = creditCardRepository.findByNumber(number);
         try {
             Assertions.assertEquals(creditCard, service.findCreditCard(number));

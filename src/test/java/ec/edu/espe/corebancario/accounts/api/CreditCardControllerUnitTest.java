@@ -1,13 +1,10 @@
 package ec.edu.espe.corebancario.accounts.api;
 
-import ec.edu.espe.corebancario.accounts.api.dto.CreditCardRq;
 import ec.edu.espe.corebancario.accounts.api.dto.UpdateAccountStatusRq;
 import ec.edu.espe.corebancario.accounts.exception.DocumentNotFoundException;
 import ec.edu.espe.corebancario.accounts.exception.UpdateException;
 import ec.edu.espe.corebancario.accounts.model.CreditCard;
 import ec.edu.espe.corebancario.accounts.service.CreditCardService;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
@@ -57,22 +54,7 @@ public class CreditCardControllerUnitTest {
         ResponseEntity response = ResponseEntity.ok().build();
         Assertions.assertEquals(response, controller.updateStatus(updateAccount));        
     }
-    /*
-    @Test
-    public void givenIdentificationReturnListOfCreditCardRq(){
-        String identification = "1725456055";
-        CreditCardController controller = new CreditCardController(service);
-        List<CreditCardRq> result = new ArrayList<CreditCardRq>();
-        try {
-            when (service.listCreditCardActiva(identification))
-                    .thenReturn(result);
-        } catch (DocumentNotFoundException ex) {
-            
-        }
-        ResponseEntity response = ResponseEntity.ok(result);
-        Assertions.assertEquals(response, controller.findCreditCard(identification));
-    }
-    */
+    
     @Test
     public void givenNullNumberReturnNotFound(){
         String number = null;
