@@ -74,29 +74,7 @@ public class CreditCardService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
             if (!accounts.isEmpty()) {
-                List<CreditCardRq> creditCardsRq = new ArrayList<CreditCardRq>();
-                for (int i = 0; i < accounts.size(); i++) {
-                    if (4 == accounts.get(i).getType() || 5 == accounts.get(i).getType()) {
-                        List<CreditCard> creditCards
-                                = this.creditCardRepo.findByCodAccountAndStatus(
-                                        accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
-                        if (!creditCards.isEmpty()) {
-                            for (int j = 0; j < creditCards.size(); j++) {
-                                CreditCardRq cardRq = new CreditCardRq();
-                                cardRq.setNumber(creditCards.get(j).getNumber());
-                                cardRq.setLimitAccount(creditCards.get(j).getLimitAccount());
-                                cardRq.setExpirationDate(creditCards.get(j).getExpirationDate());
-                                cardRq.setAccount(accounts.get(i).getNumber());
-                                cardRq.setBalanceAccount(accounts.get(i).getBalance());
-                                creditCardsRq.add(cardRq);
-                            }
-                        } else {
-                            throw new DocumentNotFoundException("No existen tarjetas de credito activas de: "
-                                    + identification);
-                        }
-                    }
-                }
-                return creditCardsRq;
+                return sendListCreditCardRq(accounts, identification);
             } else {
                 throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: "
                         + identification);
@@ -112,28 +90,7 @@ public class CreditCardService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentificationAndType(identification, type);
             if (!accounts.isEmpty()) {
-                List<CreditCardRq> creditCardsRq = new ArrayList<>();
-                for (int i = 0; i < accounts.size(); i++) {
-                    List<CreditCard> creditCards
-                            = this.creditCardRepo
-                                    .findByCodAccountAndStatus(
-                                            accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
-                    if (!creditCards.isEmpty()) {
-                        for (int j = 0; j < creditCards.size(); j++) {
-                            CreditCardRq cardRq = new CreditCardRq();
-                            cardRq.setNumber(creditCards.get(j).getNumber());
-                            cardRq.setLimitAccount(creditCards.get(j).getLimitAccount());
-                            cardRq.setExpirationDate(creditCards.get(j).getExpirationDate());
-                            cardRq.setAccount(accounts.get(i).getNumber());
-                            cardRq.setBalanceAccount(accounts.get(i).getBalance());
-                            creditCardsRq.add(cardRq);
-                        }
-                    } else {
-                        throw new DocumentNotFoundException("No existen tarjetas de credito activas de: "
-                                + identification);
-                    }
-                }
-                return creditCardsRq;
+                return sendListCreditCardRq(accounts, identification);
             } else {
                 throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: "
                         + identification);
@@ -190,6 +147,34 @@ public class CreditCardService {
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 5);
         return calendar.getTime();
+    }
+
+    private List<CreditCardRq> sendListCreditCardRq(List<Account> accounts, String identification)
+            throws DocumentNotFoundException {
+        List<CreditCardRq> creditCardsRq = new ArrayList<>();
+        for (int i = 0; i < accounts.size(); i++) {
+            if (4 == accounts.get(i).getType() || 5 == accounts.get(i).getType()) {
+                List<CreditCard> creditCards
+                        = this.creditCardRepo
+                                .findByCodAccountAndStatus(
+                                        accounts.get(i).getCodigo(), StateAccountEnum.ACTIVO.getEstado());
+                if (!creditCards.isEmpty()) {
+                    for (int j = 0; j < creditCards.size(); j++) {
+                        CreditCardRq cardRq = new CreditCardRq();
+                        cardRq.setNumber(creditCards.get(j).getNumber());
+                        cardRq.setLimitAccount(creditCards.get(j).getLimitAccount());
+                        cardRq.setExpirationDate(creditCards.get(j).getExpirationDate());
+                        cardRq.setAccount(accounts.get(i).getNumber());
+                        cardRq.setBalanceAccount(accounts.get(i).getBalance());
+                        creditCardsRq.add(cardRq);
+                    }
+                } else {
+                    throw new DocumentNotFoundException("No existen tarjetas de credito activas de: "
+                            + identification);
+                }
+            }
+        }
+        return creditCardsRq;
     }
 
 }
