@@ -44,12 +44,13 @@ public class AccountService {
                 log.info("Creando cuenta " + account.getNumber());
                 this.accountRepo.save(account);
             } else {
-                log.error("Error al crear cuenta con cliente no existente: " + account.getClientIdentification());
+                log.error("Error creando cuenta con cliente no existente: " + account.getClientIdentification());
                 throw new InsertException(Account.class.getSimpleName(),
                         "Error al crear cuenta con cliente no existente: "
                         + account.toString());
             }
         } catch (Exception e) {
+            log.error("Error al crear cuenta");
             throw new InsertException(Account.class.getSimpleName(),
                     "Ocurrio un error al crear la cuenta: " + account.toString(), e);
         }
@@ -59,8 +60,10 @@ public class AccountService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
             if (!accounts.isEmpty()) {
+                log.info("Listando cuentas por identificacion: " + identification);
                 return this.accountRepo.findByClientIdentification(identification);
             } else {
+                log.error("No hay cuentas a nombre del cliente: " + identification);
                 throw new DocumentNotFoundException("No existen cuentas asociadas al cliente: " + identification);
             }
         } catch (Exception e) {
@@ -130,8 +133,10 @@ public class AccountService {
                         balance = balance.add(accounts.get(i).getBalance());
                     }
                 }
+                log.info("Obteniendo balance del cliente: " + identification);
                 return balance;
             } else {
+                log.info("No existen cuentas o no existen cuenta activas del cliente: " + identification);
                 throw new DocumentNotFoundException("No existe cuentas para el cliente" + identification);
             }
         } catch (Exception e) {
@@ -143,8 +148,10 @@ public class AccountService {
         try {
             Account account = this.accountRepo.findByNumber(number);
             if (account != null) {
+                log.info("Obteniendo cuenta por su numero: " + number);
                 return account;
             } else {
+                log.info("Cuenta con numero no existente: " + number);
                 throw new DocumentNotFoundException("Cuenta buscada por numero no existente");
             }
         } catch (Exception e) {
@@ -156,8 +163,10 @@ public class AccountService {
         try {
             Optional<Account> accountFind = this.accountRepo.findById(id);
             if (!accountFind.isEmpty()) {
+                log.info("Obteniendo cuenta por su id: " + id);
                 return accountFind.get();
             } else {
+                log.error("Cuenta con id no existente: " + id);
                 throw new DocumentNotFoundException("Cuenta buscada por ID no existente");
             }
         } catch (Exception e) {
@@ -171,8 +180,10 @@ public class AccountService {
                     = this.accountRepo
                             .findByClientIdentificationOrderByCreationDateDesc(identification, PageRequest.of(0, 1));
             if (!accountFind.isEmpty()) {
+                log.info("Obteniendo ultima cuenta creada de un cliente: " + identification);
                 return accountFind.get(0);
             } else {
+                log.error("Cliente no tiene cuentas registradas: " + identification);
                 throw new DocumentNotFoundException("Ultima cuenta no existente");
             }
         } catch (Exception e) {

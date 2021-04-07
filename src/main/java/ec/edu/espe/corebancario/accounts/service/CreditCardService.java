@@ -49,8 +49,11 @@ public class CreditCardService {
             creditCard.setCreationDate(new Date());
             creditCard.setExpirationDate(expirationDate());
             creditCard.setStatus(StateAccountEnum.INACTIVO.getEstado());
+            log.info("Creando tarjeta de credito: " + creditCard.getNumber()
+                    + "cuenta: " + creditCard.getCodAccount());
             this.creditCardRepo.save(creditCard);
         } catch (Exception e) {
+            log.error("Error al crear tarjeta de credito");
             throw new InsertException(CreditCardService.class.getSimpleName(),
                     "Ocurrio un error al crear la la tarjeta de credito: "
                     + creditCard.toString(), e);
@@ -61,8 +64,10 @@ public class CreditCardService {
         try {
             CreditCard creditCard = this.creditCardRepo.findByNumber(number);
             if (creditCard != null) {
+                log.info("Listando tarjeta de credito por su numero: " + number);
                 return creditCard;
             } else {
+                log.error("Tarjeta de credito no existente: " + number);
                 throw new DocumentNotFoundException("No existe la tarjeta de credito.");
             }
         } catch (Exception e) {
@@ -74,9 +79,11 @@ public class CreditCardService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentification(identification);
             if (!accounts.isEmpty()) {
+                log.info("Listando tarjetas de credito activas del cliente: " + identification);
                 return sendListCreditCardRq(accounts, identification);
             } else {
-                throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: "
+                log.info("Tarjetas activas no existentes del cliente: " + identification);
+                throw new DocumentNotFoundException("No existen tarjetas de credito a nombre del cliente: "
                         + identification);
             }
         } catch (Exception e) {
@@ -90,8 +97,10 @@ public class CreditCardService {
         try {
             List<Account> accounts = this.accountRepo.findByClientIdentificationAndType(identification, type);
             if (!accounts.isEmpty()) {
+                log.info("Listando tarjetas de creditos de un tipo y activas del cliente: " + identification);
                 return sendListCreditCardRq(accounts, identification);
             } else {
+                log.error("No existen tarjetas de creditos del tipo y activas del cliente: " + identification);
                 throw new DocumentNotFoundException("No existen tarjetas de credito a nombre de ese cliente: "
                         + identification);
             }
